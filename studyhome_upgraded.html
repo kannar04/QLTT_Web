@@ -1,0 +1,1237 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hệ thống StudyHome - LMS</title>
+<meta name="theme-color" content="#1a2d5a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/studyhome.css">
+</head>
+<body>
+
+<!-- ==================== SCREEN 1: LANDING ==================== -->
+<div id="s-landing" class="screen active">
+  <div class="landing-shell">
+    <div class="landing-logo-wrap">
+      <div class="logo-box"><div class="logo-fallback">TRUNG TÂM<br>StudyHome</div></div>
+      <span class="landing-subtitle">StudyHome LMS</span>
+    </div>
+    <h1>Hệ thống quản lý <span class="landing-title-highlight">trung tâm</span></h1>
+    <p class="landing-subtitle">Đăng nhập để tiếp tục</p>
+    <div class="landing-actions" id="landingRoleActions">
+      <button class="landing-btn btn-orange-big" type="button" data-inline-action="chooseLoginRole('student')">
+        <span class="landing-btn-title">HỌC VIÊN ĐĂNG NHẬP</span>
+      </button>
+      <button class="landing-btn btn-green-big" type="button" data-inline-action="chooseLoginRole('teacher')">
+        <span class="landing-btn-title">GIÁO VIÊN ĐĂNG NHẬP</span>
+      </button>
+      <button class="landing-btn btn-red-big" type="button" data-inline-action="chooseLoginRole('staff')">
+        <span class="landing-btn-title">NHÂN VIÊN ĐĂNG NHẬP</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 2: LOGIN STAFF ==================== -->
+<div id="s-login-staff" class="screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo-big"><div class="logo-fallback">TRUNG TÂM<br>StudyHome</div></div>
+      <h2 class="login-title">Xác nhận tài khoản Trung tâm để sử dụng các ứng dụng của Trung tâm</h2>
+      <p class="login-sub">Dành cho nhân viên trung tâm</p>
+      <div class="login-role-chip">Nhân viên</div>
+      <label class="sr-only" for="loginStaffAccount">Tài khoản</label>
+      <input class="login-input" id="loginStaffAccount" placeholder="Tài khoản" type="text" autocomplete="username">
+      <label class="sr-only" for="loginStaffPassword">Mật khẩu</label>
+      <div class="login-password-wrap">
+        <input class="login-input" id="loginStaffPassword" placeholder="Mật khẩu" type="password" autocomplete="current-password">
+        <button class="login-pass-toggle" type="button" data-inline-action="togglePasswordVisibility('loginStaffPassword', element)">Hiện</button>
+      </div>
+      <div class="login-caps-hint" id="loginStaffPasswordCapsHint" aria-live="polite"></div>
+      <div class="login-actions">
+        <button class="login-btn" id="btn-login-staff">Đăng nhập</button>
+        <button class="login-btn-secondary" type="button" data-inline-action="openForgotPassword('staff')">Quên mật khẩu?</button>
+      </div>
+      <button class="btn-back mt12 login-back" data-inline-action="show('s-landing')">Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 3: LOGIN TEACHER ==================== -->
+<div id="s-login-teacher" class="screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo-big"><div class="logo-fallback">TRUNG TÂM<br>StudyHome</div></div>
+      <h2 class="login-title">Xác nhận tài khoản Trung tâm để sử dụng các ứng dụng của Trung tâm</h2>
+      <p class="login-sub">Dành cho giáo viên trung tâm</p>
+      <div class="login-role-chip">Giáo viên</div>
+      <label class="sr-only" for="loginTeacherAccount">Tài khoản</label>
+      <input class="login-input" id="loginTeacherAccount" placeholder="Tài khoản" type="text" autocomplete="username">
+      <label class="sr-only" for="loginTeacherPassword">Mật khẩu</label>
+      <div class="login-password-wrap">
+        <input class="login-input" id="loginTeacherPassword" placeholder="Mật khẩu" type="password" autocomplete="current-password">
+        <button class="login-pass-toggle" type="button" data-inline-action="togglePasswordVisibility('loginTeacherPassword', element)">Hiện</button>
+      </div>
+      <div class="login-caps-hint" id="loginTeacherPasswordCapsHint" aria-live="polite"></div>
+      <div class="login-actions">
+        <button class="login-btn" id="btn-login-teacher">Đăng nhập</button>
+        <button class="login-btn-secondary" type="button" data-inline-action="openForgotPassword('teacher')">Quên mật khẩu?</button>
+      </div>
+      <button class="btn-back mt12 login-back" data-inline-action="show('s-landing')">Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 4: LOGIN STUDENT ==================== -->
+<div id="s-login-student" class="screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo-big"><div class="logo-fallback">TRUNG TÂM<br>StudyHome</div></div>
+      <h2 class="login-title">Xác nhận tài khoản Trung tâm để sử dụng các ứng dụng của Trung tâm</h2>
+      <p class="login-sub">Dành cho học viên trung tâm</p>
+      <div class="login-role-chip">Học viên</div>
+      <label class="sr-only" for="loginStudentAccount">Tài khoản</label>
+      <input class="login-input" id="loginStudentAccount" placeholder="Tài khoản" type="text" autocomplete="username">
+      <label class="sr-only" for="loginStudentPassword">Mật khẩu</label>
+      <div class="login-password-wrap">
+        <input class="login-input" id="loginStudentPassword" placeholder="Mật khẩu" type="password" autocomplete="current-password">
+        <button class="login-pass-toggle" type="button" data-inline-action="togglePasswordVisibility('loginStudentPassword', element)">Hiện</button>
+      </div>
+      <div class="login-caps-hint" id="loginStudentPasswordCapsHint" aria-live="polite"></div>
+      <div class="login-actions">
+        <button class="login-btn" id="btn-login-student">Đăng nhập</button>
+        <button class="login-btn-secondary" type="button" data-inline-action="openForgotPassword('student')">Quên mật khẩu?</button>
+      </div>
+      <button class="btn-back mt12 login-back" data-inline-action="show('s-landing')">Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 5: STAFF HOME ==================== -->
+<div id="s-staff-home" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="edu-dashboard-container">
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-navy">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" id="statTotalAccounts">0</div>
+          <div class="stat-label">Tổng tài khoản</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5L12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9 20v-6h6v6"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" id="statTotalClasses">0</div>
+          <div class="stat-label">Lớp đang hoạt động</div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-action" data-inline-action="show('s-staff-leave-approval')">
+        <div class="stat-icon stat-icon-orange">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" id="statPendingLeave">0</div>
+          <div class="stat-label">Đơn nghỉ chờ duyệt</div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-action" data-inline-action="show('s-staff-invoice-manage')">
+        <div class="stat-icon stat-icon-cyan">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M16 15h3"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" id="statUnpaidInvoice">0</div>
+          <div class="stat-label">Hóa đơn chưa thu</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-compact">
+      <div class="flex flex-between flex-center flex-wrap gap10">
+        <div>
+          <div class="panel-title panel-title-tight">Tổng quan vận hành trung tâm</div>
+          <div class="fs14 text-secondary">Theo dõi nhanh dữ liệu quản trị trong ngày và thao tác thường dùng.</div>
+        </div>
+        <button class="btn btn-blue" data-inline-action="show('s-report')">Xem chi tiết báo cáo</button>
+      </div>
+    </div>
+
+    <div class="panel mt16">
+      <span class="panel-tab">Công việc cần xử lý</span>
+      <div class="notif-stack">
+        <div class="notif-item"><div class="notif-text"><span class="notif-link" data-inline-action="show('s-staff-leave-approval')">2 đơn xin nghỉ đang chờ duyệt.</span></div><div class="notif-time">Hạn xử lý: hôm nay</div></div>
+        <div class="notif-item"><div class="notif-text">1 lớp cần cập nhật sĩ số sau khi thêm học viên mới.</div><div class="notif-time">Ưu tiên: trung bình</div></div>
+        <div class="notif-item"><div class="notif-text">3 khoản học phí còn nợ cần gửi nhắc nhở.</div><div class="notif-time">Ưu tiên: cao</div></div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 6: ACCOUNT LIST ==================== -->
+<div id="s-account-list" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="page-header">
+        <div>
+          <div class="page-header-title">Quản lý tài khoản</div>
+          <div class="page-header-sub">Tạo và quản lý tài khoản nhân viên, giáo viên, học viên</div>
+        </div>
+        <button class="btn btn-green" data-inline-action="show('s-account-create')">+ Tạo tài khoản</button>
+      </div>
+      <div class="flex flex-center gap12 mb16">
+        <input class="fi input-search-wide" id="accountSearchInput" placeholder="Tìm theo mã hoặc họ tên">
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th class="th-w-110">Mã tài khoản</th><th>Họ và tên</th><th class="th-w-90">Năm sinh</th><th class="th-w-80">Giới tính</th><th class="th-w-90">Vai trò</th><th class="th-w-160">Môn / Lớp</th><th class="th-w-100">Hành động</th></tr></thead>
+        <tbody id="accountTableBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 7: ACCOUNT CREATE ==================== -->
+<div id="s-account-create" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel panel-form-centered">
+      <div class="panel-title">Thông tin tài khoản</div>
+      <div class="form-row"><div class="fl">Tài khoản</div><input class="fi" id="createAccountCode" placeholder="VD: 0999999999"></div>
+      <div class="form-row"><div class="fl">Họ và tên</div><input class="fi" id="createAccountName" placeholder="Họ và tên"></div>
+      <div class="form-row"><div class="fl">Mật khẩu</div><input class="fi" id="createAccountPassword" type="password" placeholder="Mật khẩu"></div>
+      <div class="form-row"><div class="fl">Nhập lại mật khẩu</div><input class="fi" id="createAccountPasswordConfirm" type="password" placeholder="Nhập lại mật khẩu"></div>
+      <div class="form-row"><div class="fl">Chức vụ</div><input class="fi" id="createAccountRole" placeholder="staff / teacher / student"></div>
+      <div class="form-row"><div class="fl">Email</div><input class="fi" id="createAccountEmail" placeholder="email@studyhome.vn"></div>
+      <div class="form-row"><div class="fl">Số điện thoại</div><input class="fi" id="createAccountPhone" placeholder="Tối đa 10 chữ số"></div>
+      <div class="form-row"><div class="fl">Giới tính</div><input class="fi" id="createAccountGender" placeholder="Nam hoặc Nữ"></div>
+      <div class="mt20 txt-center">
+        <button class="btn btn-green btn-lg" id="btnCreateAccount">Tạo tài khoản</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 8: ACCOUNT EDIT ==================== -->
+<div id="s-account-edit" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <span class="panel-tab">Quản lý tài khoản</span>
+      <div class="panel-title">Thông tin tài khoản</div>
+      <div class="form-row"><div class="fl">Tài khoản</div><input class="fi" id="editAccountCode" readonly></div>
+      <div class="form-row"><div class="fl">Mật khẩu</div><input class="fi" id="editAccountPassword" type="password"></div>
+      <div class="profile-section mt16">
+        <span class="profile-section-tab">Thông tin cá nhân</span>
+        <div class="form-row mt8"><div class="fl">Họ và tên</div><input class="fi" id="editAccountName"></div>
+        <div class="form-row"><div class="fl">Năm sinh</div><input class="fi" id="editAccountBirthYear"></div>
+        <div class="form-row"><div class="fl">Giới tính</div><input class="fi" id="editAccountGender"></div>
+        <div class="form-row"><div class="fl">Email</div><input class="fi" id="editAccountEmail"></div>
+        <div class="form-row"><div class="fl">Số điện thoại</div><input class="fi" id="editAccountPhone"></div>
+        <div class="form-row"><div class="fl">Lớp</div><input class="fi" id="editAccountClassCode"></div>
+      </div>
+      <div class="mt16 flex flex-between">
+        <button class="btn-back" data-inline-action="cancelAccountEdit()">Quay lại</button>
+        <button class="btn btn-green" id="btnUpdateAccount">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 17B: STAFF LEAVE APPROVAL ==================== -->
+<div id="s-staff-leave-approval" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="page-header">
+        <div>
+          <div class="page-header-title">Duyệt đơn xin nghỉ</div>
+          <div class="page-header-sub">Xét duyệt đơn từ học viên</div>
+        </div>
+      </div>
+      <div class="flex gap12 mt12 mb12">
+        <button class="btn btn-outline" data-inline-action="setLeaveApprovalTab('pending')">Chờ duyệt</button>
+        <button class="btn btn-outline" data-inline-action="setLeaveApprovalTab('approved')">Đã duyệt</button>
+        <button class="btn btn-outline" data-inline-action="setLeaveApprovalTab('rejected')">Đã từ chối</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="tbl">
+          <thead><tr><th>Mã đơn</th><th>Học viên</th><th>Lớp</th><th>Ngày nghỉ</th><th>Lý do</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+          <tbody id="staffLeaveApprovalBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 17C: STAFF INVOICE MANAGE ==================== -->
+<div id="s-staff-invoice-manage" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel mb16">
+      <div class="page-header">
+        <div>
+          <div class="page-header-title">Quản lý học phí</div>
+          <div class="page-header-sub">Tạo và theo dõi hóa đơn</div>
+        </div>
+      </div>
+      <div class="panel-title">Tạo hóa đơn hàng loạt</div>
+      <div class="flex gap12 mt12 flex-wrap">
+        <select class="fi max-w-320" id="invoiceClassSelect"></select>
+        <input class="fi max-w-220" id="invoiceDueDate" type="date">
+        <button class="btn btn-cyan" data-inline-action="renderInvoiceClassPreview()">Xem trước danh sách</button>
+      </div>
+      <div class="overflow-x-auto mt12">
+        <table class="tbl">
+          <thead><tr><th>Tên</th><th>Số môn đăng ký</th><th>Học phí cơ bản</th><th>Giảm Combo</th><th>Tổng tiền</th></tr></thead>
+          <tbody id="invoicePreviewBody"></tbody>
+        </table>
+      </div>
+      <div class="mt12"><button class="btn btn-green" data-inline-action="createBulkInvoices()">Tạo hóa đơn cho toàn lớp</button></div>
+    </div>
+    <div class="panel">
+      <div class="flex flex-between flex-center mb12 flex-wrap gap8">
+        <div class="panel-title mb0">Danh sách hóa đơn</div>
+        <div class="flex gap8">
+          <button class="btn btn-outline" data-inline-action="setInvoiceFilter('all')">Tất cả</button>
+          <button class="btn btn-outline" data-inline-action="setInvoiceFilter('unpaid')">Chưa thanh toán</button>
+          <button class="btn btn-outline" data-inline-action="setInvoiceFilter('paid')">Đã thanh toán</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="tbl">
+          <thead><tr><th>Mã HĐ</th><th>Học viên</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hạn nộp</th><th>Hành động</th></tr></thead>
+          <tbody id="staffInvoiceListBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 17D: STAFF NOTIFICATION SEND ==================== -->
+<div id="s-staff-notification-send" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel mb16">
+      <div class="panel-title">Soạn thông báo mới</div>
+      <div class="mt12">
+        <label><input type="radio" name="notifyMode" value="all" checked onchange="toggleNotifyTarget()"> Tin chung (gửi tất cả)</label>
+        <label class="ml14"><input type="radio" name="notifyMode" value="private" onchange="toggleNotifyTarget()"> Tin riêng (chọn đối tượng)</label>
+      </div>
+      <div id="notifyTargetWrap" class="inline-hidden mt12 flex gap12 flex-wrap">
+        <select class="fi max-w-260" id="notifyClassSelect"></select>
+        <input class="fi max-w-260" id="notifyStudentInput" placeholder="Nhập mã học viên cụ thể (tùy chọn)">
+      </div>
+      <div class="form-row mt12"><div class="fl">Tiêu đề thông báo</div><input class="fi" id="notifyTitle"></div>
+      <div class="form-row"><div class="fl">Nội dung thông báo</div><textarea class="fi" id="notifyBody" rows="4"></textarea></div>
+      <div class="mt12"><button class="btn btn-green" data-inline-action="sendStaffNotification()">Gửi thông báo</button></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Lịch sử đã gửi</div>
+      <div class="overflow-x-auto mt12">
+        <table class="tbl"><thead><tr><th>Tiêu đề</th><th>Đối tượng</th><th>Ngày gửi</th><th>Trạng thái</th></tr></thead><tbody id="staffNotifyHistoryBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 9: STUDENT PROFILE SEARCH ==================== -->
+<div id="s-student-profile-search" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="page-header">
+        <div>
+          <div class="page-header-title">Tra cứu hồ sơ học viên</div>
+          <div class="page-header-sub">Theo dõi thông tin học viên theo mã hoặc họ tên</div>
+        </div>
+      </div>
+      <div class="flex flex-center gap12 mb16">
+        <input class="fi input-search-wide" id="studentProfileSearchInput" placeholder="Tìm theo mã hoặc họ tên">
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th class="th-w-110">Mã tài khoản</th><th>Họ và tên</th><th class="th-w-90">Năm sinh</th><th class="th-w-80">Giới tính</th><th class="th-w-90">Vai trò</th><th class="th-w-160">Môn / Lớp</th><th class="th-w-100">Hành động</th></tr></thead>
+        <tbody id="studentProfileTableBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 10: STUDENT PROFILE DETAIL ==================== -->
+<div id="s-student-profile-detail" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <span class="panel-tab">Hồ sơ học viên chi tiết</span>
+      <div class="flex gap16 mt16 flex-start">
+        <div class="profile-avatar"><svg viewBox="0 0 24 24" width="60" fill="#999"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <div class="flex-1">
+          <div class="tbl-wrap"><table class="tbl">
+            <tbody>
+              <tr><td class="table-key-col"><strong>Mã tài khoản</strong></td><td id="studentDetailCode">...</td></tr>
+              <tr><td><strong>Mật khẩu</strong></td><td id="studentDetailPassword">...</td></tr>
+              <tr><td><strong>Họ và tên</strong></td><td id="studentDetailName">...</td></tr>
+              <tr><td><strong>Vai trò</strong></td><td id="studentDetailRole">...</td></tr>
+              <tr><td><strong>Ngày tháng năm sinh</strong></td><td id="studentDetailBirth">...</td></tr>
+              <tr><td><strong>Giới tính</strong></td><td id="studentDetailGender">...</td></tr>
+              <tr><td><strong>Email</strong></td><td id="studentDetailEmail">...</td></tr>
+              <tr><td><strong>Số điện thoại</strong></td><td id="studentDetailPhone">...</td></tr>
+              <tr><td><strong>Địa chỉ</strong></td><td id="studentDetailAddress">...</td></tr>
+              <tr><td><strong>Các lớp đang theo học</strong></td><td id="studentDetailClasses">...</td></tr>
+            </tbody>
+          </table></div>
+          <div class="mt12 fs14 text-slate">Ghi chú: Màn hình này dùng cho nhân viên tra cứu nhanh toàn bộ hồ sơ tài khoản học viên.</div>
+        </div>
+      </div>
+      <div class="mt16 flex flex-between">
+        <button class="btn-back" data-inline-action="show('s-student-profile-search')">Quay lại</button>
+        <button class="btn btn-green" data-inline-action="openStudentEditFromDetail()">Chỉnh sửa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 11: CLASS MANAGE ==================== -->
+<div id="s-class-manage" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="page-header">
+        <div>
+          <div class="page-header-title">Quản lý lớp học</div>
+          <div class="page-header-sub">Danh sách lớp đang hoạt động</div>
+        </div>
+        <button class="btn btn-green" id="btnCreateClassInline">+ Tạo lớp mới</button>
+      </div>
+      <div class="flex gap12 mb16 flex-wrap">
+        <div class="form-row form-row-compact"><div class="fl">Mã lớp học</div><input class="fi" id="staffClassCode" placeholder="VD: L12"></div>
+        <div class="form-row form-row-compact"><div class="fl">Tên lớp học</div><input class="fi" id="staffClassName" placeholder="VD: IELTS 5.5"></div>
+        <button class="btn btn-cyan" id="btnCreateClass">Tạo mới</button>
+        <button class="btn btn-outline" id="btnDeleteClass">Xóa lớp đã chọn</button>
+      </div>
+      <div class="flex flex-between flex-center mb12">
+        <div class="fs14">Danh sách lớp học theo định dạng thẻ</div>
+        <span class="data-pill" id="selectedClassPill">Chưa chọn lớp</span>
+      </div>
+      <div class="class-grid" id="staffClassGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 12: CLASS DETAIL ==================== -->
+<div id="s-class-detail" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="flex gap20">
+      <div class="sidebar-fixed-400">
+        <div class="panel-title fs18 fw700">Quản lý lớp học</div>
+        <div class="form-row mt12"><div class="fl">Mã lớp học</div><input class="fi" id="detailClassCode"></div>
+        <div class="form-row"><div class="fl">Tên lớp học</div><input class="fi" id="detailClassName"></div>
+        <div class="form-row"><div class="fl">Mã số học viên</div><input class="fi" id="detailStudentCode" placeholder="Nhập mã học viên để thêm"></div>
+        <div class="flex-col-stack">
+          <button class="btn btn-cyan btn-w-160" id="btnAddStudentToClass">Thêm học viên</button>
+          <button class="btn btn-outline btn-w-160" id="btnRemoveStudentFromClass">Xóa theo mã</button>
+          <button class="btn btn-blue btn-w-210" id="btnOpenBulkImport">Import từ Excel/CSV</button>
+          <button class="btn btn-green btn-w-160" id="btnSaveClassDetail">Lưu thay đổi</button>
+        </div>
+        <div id="bulkImportPanel" class="panel mt12 inline-hidden panel-max-560">
+          <div class="panel-title mb8">Import học viên từ Excel/CSV</div>
+          <div class="fs14 mb8">Cột A: Mã học viên | Cột B: Họ tên | Cột C: Ngày sinh | Cột D: Email | Cột E: SĐT</div>
+          <input class="fi" id="bulkImportFile" type="file" accept=".xlsx,.xls,.csv">
+          <div class="mt8 flex gap8"><button class="btn btn-outline" data-inline-action="downloadImportTemplate()">Tải template mẫu</button><button class="btn btn-cyan" data-inline-action="previewBulkImport()">Xem trước</button></div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="panel-title fs18 fw700">Danh sách học viên</div>
+        <div class="panel mt8 panel-min-h-220">
+          <table class="tbl tbl-center">
+            <thead><tr><th>Mã học viên</th><th>Họ tên</th><th>Năm sinh</th><th>Giới tính</th><th>Thao tác</th></tr></thead>
+            <tbody id="classDetailStudentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 13: TIMETABLE ==================== -->
+<div id="s-timetable" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel-title fs20 fw700 mb16">Thời khóa biểu lớp học</div>
+    <div class="flex toolbar-end"><button class="btn btn-cyan" id="btnOpenScheduleForm">+ Xếp lịch học mới</button></div>
+    <div id="staffScheduleForm" class="panel mb12 inline-hidden">
+      <div class="flex gap12 flex-wrap">
+        <select class="fi max-w-220" id="scheduleClassCode"></select>
+        <select class="fi max-w-160" id="scheduleDay"><option>Thứ 2</option><option>Thứ 3</option><option>Thứ 4</option><option>Thứ 5</option><option>Thứ 6</option><option>Thứ 7</option><option>Chủ nhật</option></select>
+        <input class="fi max-w-150" id="scheduleStart" type="time">
+        <input class="fi max-w-150" id="scheduleEnd" type="time">
+        <select class="fi max-w-180" id="scheduleRoom"></select>
+        <select class="fi max-w-220" id="scheduleTeacher"></select>
+      </div>
+      <div class="mt12 flex gap8"><button class="btn btn-outline" data-inline-action="checkNewScheduleConflict()">Kiểm tra xung đột</button><button class="btn btn-green" id="btnSaveSchedule" data-inline-action="saveNewSchedule()" disabled>Lưu thay đổi</button></div>
+    </div>
+    <div class="flex flex-center gap12 mb16">
+      <div class="fl">Mã lớp học</div><input class="fi max-w-300">
+      <button class="btn btn-cyan">Tìm kiếm</button>
+    </div>
+    <table class="ttbl">
+      <thead><tr><th>Tiết</th><th>Thứ 2</th><th>Thứ 3</th><th>Thứ 4</th><th>Thứ 5</th><th>Thứ 6</th><th>Thứ 7</th><th>Chủ nhật</th></tr></thead>
+      <tbody>
+        <tr><td class="td-h-50"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="td-h-50"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="td-h-50"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="flex gap12 mt16 justify-end">
+      <button class="btn btn-cyan">Chỉnh sửa</button>
+      <button class="btn btn-cyan">Lưu thay đổi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 14: REVENUE ==================== -->
+<div id="s-revenue" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="panel-title fw700 mb12">Thống kê doanh thu</div>
+      <div class="flex flex-center gap12 mb0 filter-bar-soft">
+        <span class="fs14 fw700">Từ ngày</span>
+        <input class="fi max-w-150 input-pill" type="date">
+        <span class="fs14 fw700">Đến ngày</span>
+        <input class="fi max-w-150 input-pill" type="date">
+        <button class="btn btn-cyan btn-pill">Lọc</button>
+      </div>
+      <table class="tbl mt12">
+        <thead><tr><th>Tổng doanh thu</th><th>Số học viên</th><th>Số lớp</th><th>Tổng trung bình</th></tr></thead>
+        <tbody><tr><td class="td-h-40"></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <div class="panel mt16 placeholder-center min-h-120">Biểu đồ doanh thu</div>
+      <div class="panel mt12 placeholder-center min-h-40">Bản chi tiết doanh thu</div>
+      <table class="tbl mt0">
+        <thead><tr><th>Ngày</th><th>Lớp</th><th>Số học viên</th><th>Học phí</th><th>Doanh thu</th></tr></thead>
+        <tbody><tr><td class="td-h-36"></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 15: REPORT ==================== -->
+<div id="s-report" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="page-header">
+      <div>
+        <div class="page-header-title">Báo cáo &amp; Thống kê</div>
+        <div class="page-header-sub">Phân tích dữ liệu học tập và chuyên cần</div>
+      </div>
+    </div>
+    <div class="edu-dashboard-container">
+    <div class="edu-card-grid max-w-820 mx-auto">
+      <div class="report-card" data-inline-action="show('s-report-grade')">
+        <div class="report-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+        <div class="report-card-title">Báo cáo phổ điểm</div>
+        <div class="report-card-desc">Thống kê phân bố điểm số theo lớp và môn học. Xuất báo cáo dạng bảng.</div>
+        <div class="report-card-footer"><span>Xem chi tiết</span><span>Mở</span></div>
+      </div>
+      <div class="report-card" data-inline-action="show('s-report-attendance')">
+        <div class="report-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h8M8 18h5"/></svg></div>
+        <div class="report-card-title">Báo cáo chuyên cần</div>
+        <div class="report-card-desc">Theo dõi tỉ lệ đi học, vắng mặt theo từng lớp và khoảng thời gian.</div>
+        <div class="report-card-footer"><span>Xem chi tiết</span><span>Mở</span></div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 16: REPORT GRADE ==================== -->
+<div id="s-report-grade" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="panel-title fw700">Báo cáo phổ điểm</div>
+      <div class="flex flex-center gap16 mb12">
+        <span class="fs14 fw700">Lớp</span><input class="report-fi">
+        <span class="fs14 fw700">Môn</span><input class="report-fi">
+      </div>
+      <table class="tbl"><thead><tr><th>Số học viên</th><th>Điểm cao nhất</th><th>Điểm thấp nhất</th><th>Điểm trung bình</th></tr></thead>
+      <tbody><tr><td class="td-h-36"></td><td></td><td></td><td></td></tr></tbody></table>
+      <div class="panel mt12 placeholder-center min-h-100">Biểu đồ phổ điểm</div>
+      <div class="panel mt8 placeholder-center min-h-30">Bảng chi tiết</div>
+      <table class="tbl"><thead><tr><th>STT</th><th>Họ và tên</th><th>Điểm</th><th>Xếp loại</th></tr></thead>
+      <tbody><tr><td class="td-h-36"></td><td></td><td></td><td></td></tr></tbody></table>
+      <div class="mt12 flex justify-end">
+        <button class="btn btn-cyan">Xuất báo cáo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 17: REPORT ATTENDANCE ==================== -->
+<div id="s-report-attendance" class="screen staff-screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="panel-title fw700">Báo cáo chuyên cần</div>
+      <div class="flex flex-center gap16 mb12">
+        <span class="fs14 fw700">Từ ngày</span><input class="report-fi" type="date">
+        <span class="fs14 fw700">Đến ngày</span><input class="report-fi" type="date">
+      </div>
+      <table class="tbl"><thead><tr><th>Tổng ngày công</th><th>Có mặt</th><th>Vắng</th><th>Đi trễ</th><th>Tỉ lệ (%)</th></tr></thead>
+      <tbody><tr><td class="td-h-36"></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+      <div class="panel mt12 placeholder-center min-h-100">Biểu đồ Chuyên cần</div>
+      <div class="panel mt8 placeholder-center min-h-30">Bảng chi tiết</div>
+      <table class="tbl"><thead><tr><th>Tên giáo viên</th><th>Ngày</th><th>Trạng thái</th><th>Giờ vào</th><th>Ghi chú</th></tr></thead>
+      <tbody><tr><td class="td-h-36"></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+      <div class="mt12 flex justify-end">
+        <button class="btn btn-cyan">Xuất báo cáo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TEACHER HEADER TEMPLATE (reusable) ==================== -->
+<!-- ==================== SCREEN 18: TEACHER DASHBOARD ==================== -->
+<div id="s-teacher-dashboard" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="breadcrumb"></div>
+      <div class="flex gap12 mb16">
+        <button class="btn btn-filter-gold">Tất cả lớp học</button>
+      </div>
+      <div class="class-grid" id="teacherSubjectGrid"></div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 19: TEACHER CLASS DETAIL ==================== -->
+<div id="s-teacher-class-detail" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="edu-dashboard-container">
+      <div class="breadcrumb"></div>
+      <button class="btn-back modern-back mb16" data-inline-action="goBack()">Quay lại</button>
+      <div class="edu-action-grid mt0">
+        <div class="class-card" data-inline-action="show('s-teacher-upload')">
+          <div class="class-card-img"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" class="icon-mr8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21V4.5A2.5 2.5 0 0 1 6.5 2z"/></svg>Tài liệu</div>
+          <div class="class-name">Tải lên tài liệu</div>
+          <div class="class-pct">Quản lý tài liệu toàn lớp</div>
+        </div>
+        <div class="class-card" data-inline-action="show('s-teacher-homework')">
+          <div class="class-card-img"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" class="icon-mr8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Bài tập</div>
+          <div class="class-name">Tạo bài tập</div>
+          <div class="class-pct">Giao và theo dõi bài nộp</div>
+        </div>
+        <div class="class-card" data-inline-action="show('s-teacher-attendance')">
+          <div class="class-card-img"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" class="icon-mr8"><path d="M3 5h18"/><path d="M8 5v14"/><path d="M16 5v14"/><path d="M3 12h18"/></svg>Điểm danh</div>
+          <div class="class-name">Điểm danh</div>
+          <div class="class-pct">Theo dõi chuyên cần theo lớp</div>
+        </div>
+        <div class="class-card" data-inline-action="show('s-teacher-grades')">
+          <div class="class-card-img"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" class="icon-mr8"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>Bảng điểm</div>
+          <div class="class-name">Bảng điểm</div>
+          <div class="class-pct">Nhập và cập nhật điểm</div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 20: TEACHER UPLOAD ==================== -->
+<div id="s-teacher-upload" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="breadcrumb"></div>
+      <div class="panel mt12">
+        <div class="form-row"><div class="fl">Tiêu đề tài liệu</div><input class="fi" id="teacherDocTitle" placeholder="Nhập tiêu đề tài liệu"></div>
+        <div class="form-row"><div class="fl">Mô tả</div><input class="fi" id="teacherDocDesc" placeholder="Mô tả ngắn"></div>
+        <div class="form-row"><div class="fl">Tệp đính kèm</div><input class="fi" id="teacherDocFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg"></div>
+        <div class="file-toolbar">
+          <button class="file-tb-btn">Tệp</button>
+          <button class="file-tb-btn">Thư mục</button>
+          <button class="file-tb-btn">Xóa</button>
+        </div>
+        <div class="upload-zone">Kéo thả file vào đây</div>
+        <div class="flex gap12 mt12 justify-center">
+          <button class="btn btn-green btn-lg" id="btnTeacherDocUpload">Tải lên</button>
+          <button class="btn btn-red btn-lg" data-inline-action="show('s-teacher-class-detail')">Hủy</button>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 21: TEACHER HOMEWORK ==================== -->
+<div id="s-teacher-homework" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="breadcrumb"></div>
+      <div class="panel mt12">
+        <div class="form-row"><div class="fl">Tiêu đề bài tập</div><input class="fi" id="hwTitle" placeholder="Nhập tiêu đề bài tập"></div>
+        <div class="form-row"><div class="fl">Mô tả</div><input class="fi" id="hwDesc" placeholder="Mô tả yêu cầu bài tập"></div>
+        <div class="form-row"><div class="fl">Ngày mở</div><input class="fi" id="hwFrom" type="date" placeholder="dd/mm/yy"></div>
+        <div class="form-row"><div class="fl">Hạn nộp</div><input class="fi" id="hwDue" type="date" placeholder="dd/mm/yy"></div>
+        <div class="flex gap12 mt12">
+          <button class="btn btn-blue">Tài liệu đính kèm</button>
+          <button class="btn btn-green btn-lg ml-auto" id="btnTeacherHomeworkSave">Lưu bài tập</button>
+          <button class="btn btn-red btn-lg" data-inline-action="show('s-teacher-class-detail')">Hủy</button>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 22: TEACHER ATTENDANCE ==================== -->
+<div id="s-teacher-attendance" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="breadcrumb"></div>
+      <button class="btn-back mb12" data-inline-action="goBack()">Quay lại</button>
+      <div class="panel">
+        <div class="panel-title fw700">Danh sách lớp</div>
+        <table class="tbl" id="teacherAttendanceTable">
+          <thead><tr><th>STT</th><th>Họ và tên</th><th>Có mặt</th><th>Vắng</th><th>Ghi chú</th></tr></thead>
+          <tbody id="teacherAttendanceBody"></tbody>
+        </table>
+        <div class="flex gap12 mt14 justify-center">
+          <button class="btn btn-green btn-lg" id="btnTeacherAttendanceUpload">Lưu điểm danh</button>
+          <button class="btn btn-red btn-lg" data-inline-action="show('s-teacher-class-detail')">Hủy</button>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 23: TEACHER GRADES ==================== -->
+<div id="s-teacher-grades" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="teacher-wrap">
+    <div class="teacher-main">
+      <div class="breadcrumb"></div>
+      <button class="btn-back mb12" data-inline-action="goBack()">Quay lại</button>
+      <div class="panel">
+        <div class="panel-title fw700">Danh sách lớp</div>
+        <table class="tbl" id="teacherGradesTable">
+          <thead><tr><th>STT</th><th>Họ và tên</th><th>Ngày sinh</th><th>Cột 1</th><th>Cột 2</th><th>Cột 3</th><th>Trung bình</th></tr></thead>
+          <tbody id="teacherGradesBody"></tbody>
+        </table>
+        <div class="flex gap12 mt14">
+          <button class="btn btn-blue" id="btnTeacherAddGradeColumn">Thêm cột</button>
+          <button class="btn btn-blue" id="btnTeacherWeightConfig">Cài đặt trọng số</button>
+          <button class="btn btn-red" id="btnTeacherGradeLock">Khóa sổ điểm</button>
+          <button class="btn btn-green btn-lg ml-auto" id="btnTeacherGradeUpload">Lưu bảng điểm</button>
+          <button class="btn btn-red btn-lg" data-inline-action="show('s-teacher-class-detail')">Hủy</button>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 23B: TEACHER NOTIFICATIONS ==================== -->
+<div id="s-teacher-notifications" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div id="teacherNotificationList"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 24: STUDENT DASHBOARD ==================== -->
+<div id="s-student-dashboard" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="breadcrumb"></div>
+      <div class="flex gap12 mb16">
+        <button class="btn btn-filter-gold">Tất cả lớp học</button>
+      </div>
+      <div class="class-grid" id="studentSubjectGrid"></div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 25: STUDENT CLASS DETAIL ==================== -->
+<div id="s-student-class-detail" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="edu-dashboard-container">
+        <div class="breadcrumb"></div>
+        <button class="btn-back modern-back mb16" data-inline-action="goBack()">Quay lại</button>
+        <div class="course-detail-stacks mb16">
+          <section class="course-content-section" aria-labelledby="studentClassMaterialsTitle">
+            <button class="course-content-head course-content-toggle" type="button" id="studentClassMaterialsToggle" aria-controls="studentClassMaterialsList" aria-expanded="true" data-inline-action="toggleStudentClassSection('materials')">
+              <div>
+                <div id="studentClassMaterialsTitle" class="course-content-title">Tài liệu</div>
+                <div class="course-content-subtitle">Danh sách tài liệu của môn học đang chọn</div>
+              </div>
+              <span class="course-toggle-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7l5 6 5-6"/></svg>
+              </span>
+            </button>
+            <div id="studentClassMaterialsList" class="course-content-list course-content-collapsible"></div>
+          </section>
+          <section class="course-content-section" aria-labelledby="studentClassHomeworkTitle">
+            <button class="course-content-head course-content-toggle" type="button" id="studentClassHomeworkToggle" aria-controls="studentClassHomeworkList" aria-expanded="true" data-inline-action="toggleStudentClassSection('homework')">
+              <div>
+                <div id="studentClassHomeworkTitle" class="course-content-title">Bài tập</div>
+                <div class="course-content-subtitle">Theo dõi hạn nộp và trạng thái nộp bài ngay tại đây</div>
+              </div>
+              <span class="course-toggle-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7l5 6 5-6"/></svg>
+              </span>
+            </button>
+            <div id="studentClassHomeworkList" class="course-content-list course-content-collapsible"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 26: STUDENT MATERIALS ==================== -->
+<div id="s-student-materials" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="breadcrumb"></div>
+      <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+      <div id="studentMaterialList"></div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 27: STUDENT HOMEWORK LIST ==================== -->
+<div id="s-student-homework-list" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="breadcrumb"></div>
+      <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+      <div id="studentHomeworkList"></div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 28: STUDENT HOMEWORK DETAIL ==================== -->
+<div id="s-student-homework-detail" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="breadcrumb"></div>
+      <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+      <div class="fs15 fw700 mb8" id="studentHomeworkTitle">Bài tập 1</div>
+      <div class="fs14 lh-2 mb12" id="studentHomeworkMeta">Thời gian mở:<br>Thời gian đóng:<br>Trạng thái:</div>
+      <div class="panel panel-content-soft" id="studentHomeworkContent">&lt;Nội dung bài tập&gt;</div>
+      <div id="homeworkSubmitStatus" class="panel mt12"></div>
+      <div class="mt16 txt-center">
+        <button class="btn btn-green btn-lg" id="btnSubmitHomework">Nộp bài</button>
+      </div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 29: STUDENT GRADES ==================== -->
+<div id="s-student-transcript" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="student-wrap">
+    <div class="student-main">
+      <div class="breadcrumb"></div>
+      <div class="flex flex-between flex-center mb12 mt8">
+        <button class="btn-back" data-inline-action="goBack()">Quay lại</button>
+        <div class="fs13 text-muted fw600">Tổng hợp kết quả tất cả môn học đang theo học</div>
+      </div>
+      <div id="studentTranscriptSummary" class="stat-row mb12"></div>
+      <div class="panel">
+        <table class="tbl" id="studentGradeTable">
+          <thead><tr><th>Môn học</th><th>Điểm 1</th><th>Điểm 2</th><th>Điểm 3</th><th>Trung bình</th></tr></thead>
+          <tbody id="studentGradesBody"></tbody>
+        </table>
+      </div>
+      <div class="panel mt12">
+        <div class="panel-title">Xu hướng điểm theo môn</div>
+        <div class="flex gap12 mt12 flex-wrap">
+          <select class="fi max-w-260" id="studentGradeTrendSubject" onchange="renderStudentProgressChart()"></select>
+        </div>
+        <div class="progress-chart mt12">
+          <svg id="studentProgressChart" viewBox="0 0 640 260" width="100%" height="260" aria-label="Biểu đồ tiến bộ học tập"></svg>
+        </div>
+      </div>
+    </div>
+    <div class="student-sidebar"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 29B: STUDENT TIMETABLE ==================== -->
+<div id="s-student-timetable" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="flex flex-between flex-center flex-wrap gap8">
+        <div>
+          <div class="panel-title mb0">Thời khóa biểu cá nhân năm 2026</div>
+          <div id="studentWeekInfo" class="fs13 text-muted mt4"></div>
+        </div>
+        <select class="fi max-w-260" id="studentWeekSelect" onchange="state.selectedStudentWeek=Number(this.value);renderStudentTimetable()"></select>
+      </div>
+      <div class="overflow-x-auto mt12">
+        <table class="schedule-grid">
+          <thead id="studentTimetableHead"></thead>
+          <tbody id="studentTimetableBody"></tbody>
+        </table>
+      </div>
+      <div class="mt12"><button class="btn btn-cyan" data-inline-action="show('s-student-exam-schedule')">Xem lịch thi</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 29C: STUDENT EXAM SCHEDULE ==================== -->
+<div id="s-student-exam-schedule" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="panel">
+      <div class="panel-title">Lịch thi học viên</div>
+      <div class="overflow-x-auto mt12">
+        <table class="tbl">
+          <thead><tr><th>Môn thi</th><th>Ngày thi</th><th>Ca thi</th><th>Phòng thi</th><th>Số báo danh</th><th>Kết quả</th></tr></thead>
+          <tbody id="studentExamBody"></tbody>
+        </table>
+      </div>
+      <div class="mt12"><button class="btn-back" data-inline-action="goBack()">Quay lại</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 30: STUDENT ABSENCE ==================== -->
+<div id="s-student-absence" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="edu-dashboard-container">
+      <div class="edu-card-grid">
+      <div class="action-card">
+        <div class="action-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div class="action-card-title">Tạo đơn xin nghỉ</div>
+        <div class="action-card-desc">Gửi đơn cho buổi học sắp tới.</div>
+        <div><button class="btn btn-green" data-inline-action="show('s-student-absence-create')">Tạo đơn mới</button></div>
+      </div>
+      <div class="action-card">
+        <div class="action-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+        </div>
+        <div class="action-card-title">Lịch sử đơn</div>
+        <div class="action-card-desc">Theo dõi các đơn đã gửi và trạng thái xử lý.</div>
+        <div><span class="badge badge-orange" id="studentPendingAbsenceBadge">0 đơn chờ duyệt</span></div>
+        <div><button class="btn btn-outline" data-inline-action="show('s-student-absence-history')">Xem lịch sử</button></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 31: STUDENT ABSENCE CREATE ==================== -->
+<div id="s-student-absence-create" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+    <div class="panel max-w-800 mx-auto min-h-300">
+      <div class="form-row"><div class="fl">Chọn lớp học</div><select class="fi" id="absenceClassCode"></select></div>
+      <div class="form-row"><div class="fl">Ngày nghỉ</div><input class="fi" id="absenceDate" type="date"></div>
+      <div class="form-row"><div class="fl">Lý do xin nghỉ</div><input class="fi" id="absenceReason" placeholder="Nhập lý do xin nghỉ (ít nhất 10 ký tự)"></div>
+      <div class="form-row"><div class="fl">Mô tả</div><input class="fi" id="absenceDescription" placeholder="Mô tả chi tiết"></div>
+    </div>
+    <div class="txt-center mt20">
+      <button class="btn btn-green btn-lg" id="btnSubmitAbsence">Nộp đơn xin nghỉ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 32: STUDENT ABSENCE HISTORY ==================== -->
+<div id="s-student-absence-history" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+    <div id="absenceHistoryList"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 33: STUDENT TUITION ==================== -->
+<div id="s-student-tuition" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="edu-dashboard-container">
+      <div class="edu-card-grid">
+      <div class="action-card">
+        <div class="action-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M16 15h2"/></svg>
+        </div>
+        <div class="action-card-title">Chi tiết học phí</div>
+        <div class="action-card-desc">Theo dõi khoản học phí, hạn đóng và trạng thái từng hóa đơn.</div>
+        <div class="fs18 fw800 text-red" id="studentTuitionDebtBadge">0 VND</div>
+        <div><button class="btn btn-green" data-inline-action="show('s-student-tuition-detail')">Xem chi tiết</button></div>
+      </div>
+      <div class="action-card">
+        <div class="action-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v5h5"/><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M12 7v5l3 3"/></svg>
+        </div>
+        <div class="action-card-title">Lịch sử thanh toán</div>
+        <div class="action-card-desc">Xem lại các giao dịch đã thanh toán và biên lai điện tử.</div>
+        <div class="fs18 fw800 text-navy" id="studentPaidCountBadge">0 lần đã đóng</div>
+        <div><button class="btn btn-outline" data-inline-action="show('s-student-payment-history')">Xem lịch sử</button></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 34: STUDENT TUITION DETAIL ==================== -->
+<div id="s-student-tuition-detail" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div class="flex flex-between flex-center mb12">
+      <button class="btn-back" data-inline-action="goBack()">Quay lại</button>
+      <button class="btn btn-outline" data-inline-action="show('s-student-payment-process')">Thanh toán</button>
+    </div>
+    <div class="pay-info" id="studentTuitionInfo">Họ tên:<br>Mã học viên:<br>Số điện thoại:</div>
+    <div class="panel mb12"><strong>Tổng nợ còn lại:</strong> <span id="studentTotalDebt">0 VND</span></div>
+    <div class="overflow-x-auto">
+      <table class="tbl">
+        <thead>
+          <tr><th>Kỳ thu</th><th>Nội dung</th><th>Học phí gốc</th><th>Giảm Combo</th><th>Số tiền cần đóng</th><th>Hạn nộp</th><th>Trạng thái</th><th>Hành động</th></tr>
+        </thead>
+        <tbody id="studentTuitionBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 35: STUDENT PAYMENT PROCESS ==================== -->
+<div id="s-student-payment-process" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content max-w-900">
+    <div class="panel">
+      <div class="panel-title">Thanh toán học phí</div>
+      <div id="studentPaymentSummary" class="mt12"></div>
+      <div class="mt12">
+        <label><input type="radio" name="paymentMethod" value="bank" onchange="onPaymentMethodChange()"> Chuyển khoản ngân hàng</label>
+        <label class="ml16"><input type="radio" name="paymentMethod" value="cash" onchange="onPaymentMethodChange()"> Tiền mặt tại trung tâm</label>
+      </div>
+      <div id="paymentBankPanel" class="inline-hidden mt12">
+        <div class="panel panel-soft-blue">
+          <div class="qr-box">QR StudyHome</div>
+          <div class="mt12">Ngân hàng: Vietcombank<br>STK: 1234567890<br>Chủ TK: Trung tâm StudyHome</div>
+          <div class="mt12">Nội dung chuyển khoản: <strong id="paymentTransferContent"></strong></div>
+          <div class="mt12 flex gap12"><button class="btn btn-outline" data-inline-action="copyTransferContent()">Sao chép nội dung chuyển khoản</button><button class="btn btn-green" data-inline-action="confirmWaitingPayment()">Tôi đã chuyển khoản, chờ xác nhận</button></div>
+        </div>
+      </div>
+      <div id="paymentCashPanel" class="inline-hidden mt12 panel panel-soft-amber">Vui lòng đến văn phòng trung tâm để nộp tiền mặt trực tiếp. Nhân viên sẽ xác nhận và cấp biên lai.</div>
+      <div class="mt12"><button class="btn btn-red" data-inline-action="show('s-student-tuition-detail')">Hủy</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 36: STUDENT PAYMENT CONFIRM ==================== -->
+<div id="s-student-payment-confirm" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content max-w-900">
+    <div class="panel panel-soft-gray">
+      <div class="fs15 lh-25" id="studentPaymentConfirmInfo">
+        Họ tên:<br>Mã học viên:<br>Số điện thoại:<br>Phương thức thanh toán:<br>Nội dung:<br>Số tiền:
+      </div>
+    </div>
+    <div class="flex gap16 mt16 justify-center">
+      <button class="btn btn-green btn-lg" id="btnConfirmPayment">Thanh toán</button>
+      <button class="btn btn-red btn-lg" data-inline-action="show('s-student-payment-process')">Hủy</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 37: STUDENT PAYMENT HISTORY ==================== -->
+<div id="s-student-payment-history" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <button class="btn-back mb16" data-inline-action="goBack()">Quay lại</button>
+    <div class="overflow-x-auto">
+      <table class="tbl">
+        <thead><tr><th>Số hóa đơn</th><th>Nội dung</th><th>Ngày đóng</th><th>Hình thức thanh toán</th><th>Thành tiền</th><th>Hóa đơn điện tử</th><th></th></tr></thead>
+        <tbody id="studentPaymentHistoryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 38: STUDENT NOTIFICATIONS ==================== -->
+<div id="s-student-notifications" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content">
+    <div id="studentNotificationList"></div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 39: STUDENT PROFILE ==================== -->
+<div id="s-student-profile" class="screen">
+  <div class="header"></div>
+  <div class="navbar"></div>
+  <div class="content max-w-700">
+    <div class="flex flex-center gap16 mb16">
+      <div class="profile-photo-placeholder">
+        <svg viewBox="0 0 24 24" width="70" fill="#999"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <div>
+        <div class="profile-name-hero">Mã học viên - Tên học viên</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="form-row"><div class="fl">Mã học viên</div><input class="fi" id="profileStudentId" readonly></div>
+      <div class="form-row"><div class="fl">Họ tên</div><input class="fi" id="profileName" readonly></div>
+      <div class="form-row"><div class="fl">Ngày sinh</div><input class="fi" id="profileBirthYear" readonly></div>
+      <div class="form-row"><div class="fl">Email</div><input class="fi" id="profileEmail" readonly></div>
+      <div class="form-row"><div class="fl">Số điện thoại</div><input class="fi" id="profilePhone" readonly></div>
+      <div class="form-row"><div class="fl">Địa chỉ</div><input class="fi" id="profileAddress" readonly></div>
+      <div class="mt12" id="profileEditActions">
+        <button class="btn btn-cyan" data-inline-action="enableStudentProfileEdit()">Chỉnh sửa thông tin</button>
+      </div>
+      <div class="mt12 inline-hidden" id="profileSaveActions">
+        <button class="btn btn-green" data-inline-action="saveStudentProfile()">Lưu thay đổi</button>
+        <button class="btn btn-outline" data-inline-action="cancelStudentProfileEdit()">Hủy</button>
+      </div>
+    </div>
+    <div class="panel mt12">
+      <div class="panel-title">Đổi mật khẩu</div>
+      <div class="form-row"><div class="fl">Mật khẩu hiện tại</div><input class="fi" id="profileCurrentPassword" type="password"></div>
+      <div class="form-row"><div class="fl">Mật khẩu mới</div><input class="fi" id="profileNewPassword" type="password"></div>
+      <div class="form-row"><div class="fl">Xác nhận mật khẩu mới</div><input class="fi" id="profileConfirmPassword" type="password"></div>
+      <div class="mt12"><button class="btn btn-green" data-inline-action="changeStudentPassword()">Đổi mật khẩu</button></div>
+    </div>
+    <button class="btn btn-outline underline mt12 btn-block-180" data-inline-action="performLogout()">Đăng xuất</button>
+  </div>
+</div>
+
+<div id="invoicePaymentModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="panel-title" id="invoicePaymentModalTitle">Xác nhận đã thu học phí</div>
+    <p class="fs14" id="invoicePaymentModalDesc">Cập nhật phương thức và ngày thu để hoàn tất xác nhận thanh toán.</p>
+    <div class="form-row mt12"><div class="fl">Hình thức thu</div><select class="fi" id="invoicePaidMethod"><option>Chuyển khoản</option><option>Tiền mặt</option><option>Thẻ tín dụng</option><option>Thẻ ghi nợ</option></select></div>
+    <div class="form-row"><div class="fl">Ngày thu</div><input class="fi" id="invoicePaidDate" type="date"></div>
+    <div class="mt12 flex gap12 justify-end"><button class="btn btn-outline" data-inline-action="closeInvoicePaymentModal()">Hủy</button><button class="btn btn-green" data-inline-action="submitInvoicePaid()">Lưu thay đổi</button></div>
+  </div>
+</div>
+
+<div id="receiptModal" class="modal-overlay">
+  <div class="modal-box" id="receiptContent"></div>
+</div>
+
+<div id="teacherWeightModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="panel-title" id="teacherWeightModalTitle">Cài đặt trọng số</div>
+    <p class="fs14" id="teacherWeightModalDesc">Điều chỉnh tỷ lệ phần trăm cho từng cột điểm, tổng phải bằng 100%.</p>
+    <table class="tbl mt12">
+      <thead><tr><th>Cột điểm</th><th>Tên</th><th>Trọng số (%)</th></tr></thead>
+      <tbody id="teacherWeightBody"></tbody>
+    </table>
+    <div class="mt12 flex gap8 justify-end"><button class="btn btn-outline" data-inline-action="closeModal('teacherWeightModal')">Đóng</button><button class="btn btn-green" data-inline-action="saveTeacherWeights()">Lưu thay đổi</button></div>
+  </div>
+</div>
+
+<div id="forgotPasswordModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="panel-title" id="forgotPasswordModalTitle">Quên mật khẩu</div>
+    <p class="fs14" id="forgotPasswordModalDesc">Nhập mã tài khoản để khôi phục mật khẩu về mặc định.</p>
+    <div class="form-row mt12"><div class="fl">Vai trò</div><input class="fi" id="forgotPasswordRoleLabel" type="text" readonly></div>
+    <div class="form-row"><div class="fl">Mã tài khoản</div><input class="fi" id="forgotPasswordAccountId" type="text" placeholder="VD: HV001"></div>
+    <div class="fs13 text-secondary mt8" id="forgotPasswordResult"></div>
+    <div class="mt12 flex gap8 justify-end"><button class="btn btn-outline" data-inline-action="closeModal('forgotPasswordModal')">Đóng</button><button class="btn btn-green" data-inline-action="submitForgotPasswordLookup()">Khôi phục mật khẩu</button></div>
+  </div>
+</div>
+
+<script src="assets/js/core/core-data-utils.js" defer></script>
+<script src="assets/js/core/core-ui-a11y.js" defer></script>
+<script src="assets/js/core/core-runtime-shell.js" defer></script>
+<script src="assets/js/core/runtime-upgrades.js" defer></script>
+<script src="assets/js/features/subject-dashboard.js" defer></script>
+<script src="assets/js/features/navigation-auth-account.js" defer></script>
+<script src="assets/js/features/staff-class-student-content.js" defer></script>
+<script src="assets/js/features/homework-payment-notify.js" defer></script>
+<script src="assets/js/features/staff-operations.js" defer></script>
+<script src="assets/js/features/portal-shell-layout.js" defer></script>
+<script src="assets/js/features/student-profile-grades.js" defer></script>
+<script src="assets/js/features/teacher-tools-grades.js" defer></script>
+<script src="assets/js/app/app-bootstrap.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
