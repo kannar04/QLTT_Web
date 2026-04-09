@@ -710,6 +710,18 @@ function applyDynamicBreadcrumbs() {
 }
 
 function applyDynamicNavbars() {
+  const staffRootScreens = {
+    's-staff-home': true,
+    's-account-list': true,
+    's-student-profile-search': true,
+    's-class-manage': true,
+    's-timetable': true,
+    's-staff-leave-approval': true,
+    's-staff-invoice-manage': true,
+    's-staff-notification-send': true,
+    's-revenue': true,
+    's-report': true
+  };
   const screens = document.querySelectorAll('.screen');
   let i;
   for (i = 0; i < screens.length; i++) {
@@ -732,7 +744,9 @@ function applyDynamicNavbars() {
         revenue: id === 's-revenue',
         report: id.indexOf('s-report') === 0
       };
+      const showBackButton = !staffRootScreens[id];
       nav.innerHTML =
+        (showBackButton ? '<button class="nav-btn" data-inline-action="goBack()">Quay lại</button>' : '') +
         '<button class="nav-btn ' + (active.home ? 'active' : '') + '" data-inline-action="show(\'s-staff-home\')">Trang chủ</button>' +
         '<button class="nav-btn ' + (active.account ? 'active' : '') + '" data-inline-action="show(\'s-account-list\')">Tài khoản</button>' +
         '<button class="nav-btn ' + (active.profile ? 'active' : '') + '" data-inline-action="show(\'s-student-profile-search\')">Hồ sơ học viên</button>' +

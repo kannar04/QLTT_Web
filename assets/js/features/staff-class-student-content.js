@@ -241,6 +241,7 @@ function addStudentToClass() {
   scheduleAppSnapshotSave();
   renderClassDetail();
   renderClassGrid();
+  renderStaffSidebarStats();
   toast('Đã thêm học viên vào lớp.');
 }
 
@@ -282,6 +283,7 @@ function removeStudentFromClass(studentId) {
       }
       renderClassDetail();
       renderClassGrid();
+      renderStaffSidebarStats();
     }, { type: 'class-remove-student', classCode: classCode, studentId: studentId });
   }
   if (typeof logAuditAction === 'function') {
@@ -290,6 +292,7 @@ function removeStudentFromClass(studentId) {
   scheduleAppSnapshotSave();
   renderClassDetail();
   renderClassGrid();
+  renderStaffSidebarStats();
   toast('Đã xóa học viên khỏi lớp.');
 }
 
@@ -482,43 +485,116 @@ function renderStaffSidebarStats() {
   const ntc = byId('staffSideNoticeCount');
   const pendingLeave = byId('pendingLeaveCount');
   const unpaidInvoice = byId('unpaidInvoiceCount');
+  const staffHomeTotalAccounts = byId('statTotalAccounts');
+  const staffHomeActiveClasses = byId('statTotalClasses');
+  const staffHomePendingLeave = byId('statPendingLeave');
+  const staffHomeUnpaidInvoice = byId('statUnpaidInvoice');
+
+  function parseClassDate(value) {
+    const raw = String(value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    let parts = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (parts) {
+      const isoDate = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
+      if (!Number.isNaN(isoDate.getTime())) {
+        isoDate.setHours(0, 0, 0, 0);
+        return isoDate;
+      }
+    }
+
+    parts = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (parts) {
+      const vnDate = new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1]));
+      if (!Number.isNaN(vnDate.getTime())) {
+        vnDate.setHours(0, 0, 0, 0);
+        return vnDate;
+      }
+    }
+
+    const fallback = new Date(raw);
+    if (Number.isNaN(fallback.getTime())) {
+      return null;
+    }
+    fallback.setHours(0, 0, 0, 0);
+    return fallback;
+  }
+
+  const accountCount = Array.isArray(db.accounts) ? db.accounts.length : 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let classCount = 0;
+  let i;
+  for (i = 0; i < db.classes.length; i++) {
+    const clsItem = db.classes[i] || {};
+    const statusText = String(clsItem.status || clsItem.state || '').toLowerCase();
+    if (clsItem.isActive === false || statusText === 'inactive' || statusText === 'closed' || statusText === 'archived' || statusText === 'deleted' || statusText === 'ended' || statusText === 'completed') {
+      continue;
+    }
+
+    if (!Array.isArray(clsItem.studentIds) || clsItem.studentIds.length === 0) {
+      continue;
+    }
+
+    const endDate = parseClassDate(clsItem.endDate || clsItem.endAt || clsItem.finishDate || clsItem.closedAt || clsItem.classEndDate);
+    if (endDate && endDate < today) {
+      continue;
+    }
+
+    classCount += 1;
+  }
+
+  let noticeCount = 0;
+  for (i = 0; i < db.notifications.length; i++) {
+    if (db.notifications[i].audience === 'all-staff') {
+      noticeCount += 1;
+    }
+  }
+
+  let pendingLeaveCount = 0;
+  for (i = 0; i < db.leaveRequests.length; i++) {
+    if (db.leaveRequests[i].status === 'pending') {
+      pendingLeaveCount += 1;
+    }
+  }
+
+  let unpaidInvoiceCount = 0;
+  for (i = 0; i < db.invoices.length; i++) {
+    if (db.invoices[i].status === 'unpaid') {
+      unpaidInvoiceCount += 1;
+    }
+  }
+
   if (acc) {
-    acc.textContent = db.accounts.length + ' tài khoản đang hoạt động';
+    acc.textContent = accountCount + ' tài khoản đang hoạt động';
   }
   if (cls) {
-    cls.textContent = db.classes.length + ' lớp đang quản lý';
+    cls.textContent = classCount + ' lớp đang quản lý';
   }
   if (ntc) {
-    let i;
-    let cnt = 0;
-    for (i = 0; i < db.notifications.length; i++) {
-      if (db.notifications[i].audience === 'all-staff') {
-        cnt += 1;
-      }
-    }
-    ntc.textContent = cnt + ' thông báo gửi nhân viên';
+    ntc.textContent = noticeCount + ' thông báo gửi nhân viên';
   }
-
   if (pendingLeave) {
-    let i;
-    let p = 0;
-    for (i = 0; i < db.leaveRequests.length; i++) {
-      if (db.leaveRequests[i].status === 'pending') {
-        p += 1;
-      }
-    }
-    pendingLeave.textContent = String(p);
+    pendingLeave.textContent = String(pendingLeaveCount);
+  }
+  if (unpaidInvoice) {
+    unpaidInvoice.textContent = String(unpaidInvoiceCount);
   }
 
-  if (unpaidInvoice) {
-    let j;
-    let u = 0;
-    for (j = 0; j < db.invoices.length; j++) {
-      if (db.invoices[j].status === 'unpaid') {
-        u += 1;
-      }
-    }
-    unpaidInvoice.textContent = String(u);
+  if (staffHomeTotalAccounts) {
+    staffHomeTotalAccounts.textContent = String(accountCount);
+  }
+  if (staffHomeActiveClasses) {
+    staffHomeActiveClasses.textContent = String(classCount);
+  }
+  if (staffHomePendingLeave) {
+    staffHomePendingLeave.textContent = String(pendingLeaveCount);
+  }
+  if (staffHomeUnpaidInvoice) {
+    staffHomeUnpaidInvoice.textContent = String(unpaidInvoiceCount);
   }
 }
 

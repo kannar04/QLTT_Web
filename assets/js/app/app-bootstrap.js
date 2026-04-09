@@ -84,6 +84,9 @@
   if (id === 's-teacher-notifications') {
     renderTeacherNotifications();
   }
+  if (id === 's-staff-home') {
+    renderStaffSidebarStats();
+  }
   if (id === 's-staff-leave-approval') {
     renderStaffLeaveApproval();
   }
