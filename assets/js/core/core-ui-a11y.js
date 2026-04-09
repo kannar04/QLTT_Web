@@ -156,7 +156,9 @@ function initModalAccessibility() {
   const modalA11yMap = {
     invoicePaymentModal: { labelledby: 'invoicePaymentModalTitle', describedby: 'invoicePaymentModalDesc' },
     teacherWeightModal: { labelledby: 'teacherWeightModalTitle', describedby: 'teacherWeightModalDesc' },
-    forgotPasswordModal: { labelledby: 'forgotPasswordModalTitle', describedby: 'forgotPasswordModalDesc' }
+    forgotPasswordModal: { labelledby: 'forgotPasswordModalTitle', describedby: 'forgotPasswordModalDesc' },
+    userProfileModal: { labelledby: 'userProfileModalTitle', describedby: 'userProfileModalDesc' },
+    headerPasswordModal: { labelledby: 'headerPasswordModalTitle', describedby: 'headerPasswordModalDesc' }
   };
   const overlays = document.querySelectorAll('.modal-overlay');
   let i;

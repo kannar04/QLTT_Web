@@ -1211,6 +1211,98 @@
   </div>
 </div>
 
+<div id="userProfileModal" class="modal-overlay">
+  <div class="modal-box profile-edit-modal">
+    <p class="sr-only" id="userProfileModalDesc">Thông tin cá nhân của người dùng đang đăng nhập.</p>
+    <div class="profile-edit-shell">
+      <div class="profile-edit-head">
+        <div class="profile-edit-title-wrap">
+          <div class="profile-edit-tag" id="userProfileModalTitle">Cập nhật thông tin cá nhân</div>
+          <p class="profile-edit-sub">Dùng chung cho học viên và giáo viên. Bạn có thể chỉnh sửa trực tiếp và lưu ngay tại đây.</p>
+        </div>
+        <div class="profile-edit-account-chip" id="profileSheetAccountDisplay">TK: ....</div>
+      </div>
+
+      <div class="profile-edit-avatar-row">
+        <div class="profile-edit-avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="64" fill="#8f96a3"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg>
+        </div>
+      </div>
+
+      <div class="profile-edit-grid">
+        <label class="profile-edit-field profile-edit-field-readonly">
+          <span class="profile-edit-label">Tài khoản</span>
+          <input class="fi profile-edit-input" id="profileSheetAccount" type="text" readonly>
+        </label>
+        <label class="profile-edit-field profile-edit-field-readonly">
+          <span class="profile-edit-label">Vai trò</span>
+          <input class="fi profile-edit-input" id="profileSheetRole" type="text" readonly>
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Họ tên</span>
+          <input class="fi profile-edit-input" id="profileSheetFullName" type="text" placeholder="Nhập họ và tên">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Giới tính</span>
+          <input class="fi profile-edit-input" id="profileSheetGender" type="text" placeholder="Nam / Nữ">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">CCCD</span>
+          <input class="fi profile-edit-input" id="profileSheetCitizenId" type="text" placeholder="Số CCCD">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Ngày sinh</span>
+          <input class="fi profile-edit-input" id="profileSheetBirthDate" type="date">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Nơi sinh</span>
+          <input class="fi profile-edit-input" id="profileSheetBirthPlace" type="text" placeholder="Nơi sinh">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Quốc gia</span>
+          <input class="fi profile-edit-input" id="profileSheetCountry" type="text" placeholder="Quốc gia">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Email</span>
+          <input class="fi profile-edit-input" id="profileSheetEmail" type="email" placeholder="email@studyhome.vn">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Điện thoại</span>
+          <input class="fi profile-edit-input" id="profileSheetPhone" type="text" placeholder="Tối đa 10 chữ số">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Tỉnh thành</span>
+          <input class="fi profile-edit-input" id="profileSheetProvince" type="text" placeholder="Tỉnh / thành">
+        </label>
+        <label class="profile-edit-field">
+          <span class="profile-edit-label">Phường xã</span>
+          <input class="fi profile-edit-input" id="profileSheetWard" type="text" placeholder="Phường / xã">
+        </label>
+        <label class="profile-edit-field profile-edit-field-full">
+          <span class="profile-edit-label">Địa chỉ</span>
+          <textarea class="fi profile-edit-input profile-edit-textarea" id="profileSheetAddress" rows="2" placeholder="Địa chỉ hiện tại"></textarea>
+        </label>
+      </div>
+
+      <div class="profile-edit-actions">
+        <button class="btn btn-outline" type="button" data-inline-action="closeModal('userProfileModal')">Đóng</button>
+        <button class="btn btn-green" type="button" data-inline-action="refreshCurrentUserProfileModal()">Cập nhật thông tin cá nhân</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="headerPasswordModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="panel-title" id="headerPasswordModalTitle">Cập nhật mật khẩu</div>
+    <p class="fs14" id="headerPasswordModalDesc">Đổi mật khẩu cho tài khoản đang đăng nhập.</p>
+    <div class="form-row mt12"><div class="fl">Mật khẩu hiện tại</div><input class="fi" id="headerPasswordCurrent" type="password" autocomplete="current-password"></div>
+    <div class="form-row"><div class="fl">Mật khẩu mới</div><input class="fi" id="headerPasswordNew" type="password" autocomplete="new-password"></div>
+    <div class="form-row"><div class="fl">Xác nhận mật khẩu mới</div><input class="fi" id="headerPasswordConfirm" type="password" autocomplete="new-password"></div>
+    <div class="mt12 flex gap8 justify-end"><button class="btn btn-outline" data-inline-action="closeModal('headerPasswordModal')">Đóng</button><button class="btn btn-green" data-inline-action="submitCurrentUserPasswordUpdate()">Cập nhật</button></div>
+  </div>
+</div>
+
 <script src="assets/js/core/core-data-utils.js" defer></script>
 <script src="assets/js/core/core-ui-a11y.js" defer></script>
 <script src="assets/js/core/core-runtime-shell.js" defer></script>
