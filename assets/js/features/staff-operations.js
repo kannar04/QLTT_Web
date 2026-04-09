@@ -46,6 +46,7 @@ function approveLeaveRequest(id) {
     logAuditAction('leave-approve', 'Duyệt đơn xin nghỉ', { leaveId: id, studentId: item.studentId, classCode: item.classCode });
   }
   scheduleAppSnapshotSave();
+  renderStaffSidebarStats();
   renderStaffLeaveApproval();
   toast('Đã duyệt đơn xin nghỉ.');
 }
@@ -77,6 +78,7 @@ function rejectLeaveRequest(id) {
     logAuditAction('leave-reject', 'Từ chối đơn xin nghỉ', { leaveId: id, studentId: item.studentId, classCode: item.classCode });
   }
   scheduleAppSnapshotSave();
+  renderStaffSidebarStats();
   renderStaffLeaveApproval();
   toast('Đã từ chối đơn xin nghỉ.');
 }
@@ -159,6 +161,7 @@ function createBulkInvoices() {
     logAuditAction('invoice-bulk-create', 'Tạo hóa đơn hàng loạt', { classCode: classCode, count: count, dueDate: dueDate });
   }
   scheduleAppSnapshotSave();
+  renderStaffSidebarStats();
   state.staffInvoiceTablePage = 1;
   renderStaffInvoiceList();
   toast('Đã tạo hóa đơn cho ' + count + ' học viên.');
@@ -242,6 +245,7 @@ function submitInvoicePaid() {
     logAuditAction('invoice-mark-paid', 'Xác nhận thu học phí', { invoiceId: inv.id, studentId: inv.studentId, method: inv.method });
   }
   scheduleAppSnapshotSave();
+  renderStaffSidebarStats();
   closeInvoicePaymentModal();
   renderStaffInvoiceList();
   renderTuition();

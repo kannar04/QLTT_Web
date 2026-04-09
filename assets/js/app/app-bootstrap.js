@@ -84,6 +84,9 @@
   if (id === 's-teacher-notifications') {
     renderTeacherNotifications();
   }
+  if (id === 's-staff-home') {
+    renderStaffSidebarStats();
+  }
   if (id === 's-staff-leave-approval') {
     renderStaffLeaveApproval();
   }
@@ -148,6 +151,11 @@ function bindEvents() {
       renderStudentProfileTable();
     };
   on('accountSearchInput', 'input', debouncedAccountRender);
+  on('accountRoleSort', 'change', function (event) {
+    state.accountRoleSort = event && event.target ? event.target.value : 'all';
+    state.accountTablePage = 1;
+    renderAccountTable();
+  });
   on('studentProfileSearchInput', 'input', debouncedStudentRender);
   on('btnCreateAccount', 'click', createAccount);
   on('btnUpdateAccount', 'click', updateAccount);

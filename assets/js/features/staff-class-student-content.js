@@ -241,6 +241,7 @@ function addStudentToClass() {
   scheduleAppSnapshotSave();
   renderClassDetail();
   renderClassGrid();
+  renderStaffSidebarStats();
   toast('Đã thêm học viên vào lớp.');
 }
 
@@ -282,6 +283,7 @@ function removeStudentFromClass(studentId) {
       }
       renderClassDetail();
       renderClassGrid();
+      renderStaffSidebarStats();
     }, { type: 'class-remove-student', classCode: classCode, studentId: studentId });
   }
   if (typeof logAuditAction === 'function') {
@@ -290,6 +292,7 @@ function removeStudentFromClass(studentId) {
   scheduleAppSnapshotSave();
   renderClassDetail();
   renderClassGrid();
+  renderStaffSidebarStats();
   toast('Đã xóa học viên khỏi lớp.');
 }
 
@@ -476,50 +479,337 @@ function injectStaffLayouts() {
   // Sidebar điều hướng nhanh đã được loại bỏ theo yêu cầu mới.
 }
 
+function getStaffTaskUiState() {
+  if (!state.staffTaskUiState || typeof state.staffTaskUiState !== 'object') {
+    state.staffTaskUiState = {};
+  }
+  if (typeof state.staffTaskUiState.listCollapsed !== 'boolean') {
+    state.staffTaskUiState.listCollapsed = false;
+  }
+  return state.staffTaskUiState;
+}
+
+function toggleStaffTaskListCollapse() {
+  const uiState = getStaffTaskUiState();
+  uiState.listCollapsed = !uiState.listCollapsed;
+  renderStaffSidebarStats();
+}
+
+function renderStaffHomeTaskList(metrics) {
+  const wrap = byId('staffHomeTaskList');
+  if (!wrap) {
+    return;
+  }
+
+  const payload = metrics || {};
+  const pendingLeaveCount = Math.max(0, Number(payload.pendingLeaveCount) || 0);
+  const unpaidInvoiceCount = Math.max(0, Number(payload.unpaidInvoiceCount) || 0);
+
+  function parseTaskDate(value) {
+    const raw = String(value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    let parts = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (parts) {
+      const isoDate = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
+      if (!Number.isNaN(isoDate.getTime())) {
+        isoDate.setHours(0, 0, 0, 0);
+        return isoDate;
+      }
+    }
+
+    parts = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (parts) {
+      const vnDate = new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1]));
+      if (!Number.isNaN(vnDate.getTime())) {
+        vnDate.setHours(0, 0, 0, 0);
+        return vnDate;
+      }
+    }
+
+    return null;
+  }
+
+  const expectedByClass = {};
+  let i;
+  for (i = 0; i < db.classes.length; i++) {
+    expectedByClass[db.classes[i].code] = 0;
+  }
+
+  for (i = 0; i < db.accounts.length; i++) {
+    const account = db.accounts[i];
+    if (!account || account.role !== 'student') {
+      continue;
+    }
+    const subjectCodes = getStudentSubjectCodes(account);
+    let j;
+    for (j = 0; j < subjectCodes.length; j++) {
+      if (Object.prototype.hasOwnProperty.call(expectedByClass, subjectCodes[j])) {
+        expectedByClass[subjectCodes[j]] += 1;
+      }
+    }
+  }
+
+  const classMismatchCodes = [];
+  for (i = 0; i < db.classes.length; i++) {
+    const cls = db.classes[i] || {};
+    const ids = Array.isArray(cls.studentIds) ? cls.studentIds : [];
+    const seen = {};
+    let validStudentCount = 0;
+    let hasIntegrityIssue = false;
+
+    let j;
+    for (j = 0; j < ids.length; j++) {
+      const sid = ids[j];
+      if (seen[sid]) {
+        hasIntegrityIssue = true;
+        continue;
+      }
+      seen[sid] = 1;
+      const student = getAccountById(sid);
+      if (!student || student.role !== 'student') {
+        hasIntegrityIssue = true;
+        continue;
+      }
+      validStudentCount += 1;
+    }
+
+    const expectedCount = expectedByClass[cls.code] || 0;
+    const capacity = Number(cls.capacity) || 0;
+    const isOverCapacity = capacity > 0 && validStudentCount > capacity;
+    if (hasIntegrityIssue || validStudentCount !== expectedCount || isOverCapacity) {
+      classMismatchCodes.push(cls.code);
+    }
+  }
+
+  const classMismatchCount = classMismatchCodes.length;
+  const classMismatchHint = classMismatchCodes.slice(0, 3).join(', ');
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dueSoonDate = new Date(today);
+  dueSoonDate.setDate(dueSoonDate.getDate() + 3);
+
+  let overdueInvoiceCount = 0;
+  let dueSoonInvoiceCount = 0;
+  for (i = 0; i < db.invoices.length; i++) {
+    const inv = db.invoices[i];
+    if (!inv || inv.status !== 'unpaid') {
+      continue;
+    }
+    const dueDate = parseTaskDate(inv.dueDate);
+    if (!dueDate) {
+      continue;
+    }
+    if (dueDate < today) {
+      overdueInvoiceCount += 1;
+      continue;
+    }
+    if (dueDate <= dueSoonDate) {
+      dueSoonInvoiceCount += 1;
+    }
+  }
+
+  const tasks = [
+    {
+      title: pendingLeaveCount > 0
+        ? (pendingLeaveCount + ' đơn xin nghỉ đang chờ duyệt')
+        : 'Không có đơn xin nghỉ chờ duyệt',
+      meta: pendingLeaveCount > 0
+        ? 'Hạn xử lý: hôm nay'
+        : 'Trạng thái: ổn định',
+      priorityText: pendingLeaveCount > 0 ? 'Ưu tiên cao' : 'Đã ổn',
+      priorityClass: pendingLeaveCount > 0 ? 'staff-task-priority-high' : 'staff-task-priority-ok',
+      action: 'show(\'s-staff-leave-approval\')'
+    },
+    {
+      title: classMismatchCount > 0
+        ? (classMismatchCount + ' lớp cần cập nhật sĩ số')
+        : 'Sĩ số lớp học đã đồng bộ',
+      meta: classMismatchCount > 0
+        ? ('Lớp cần rà soát: ' + classMismatchHint + (classMismatchCount > 3 ? '...' : ''))
+        : 'Không phát hiện chênh lệch danh sách học viên',
+      priorityText: classMismatchCount > 0 ? 'Ưu tiên trung bình' : 'Đã ổn',
+      priorityClass: classMismatchCount > 0 ? 'staff-task-priority-medium' : 'staff-task-priority-ok',
+      action: 'show(\'s-class-manage\')'
+    },
+    {
+      title: unpaidInvoiceCount > 0
+        ? (unpaidInvoiceCount + ' khoản học phí chưa thu cần theo dõi')
+        : 'Không còn hóa đơn chưa thu',
+      meta: unpaidInvoiceCount > 0
+        ? ('Quá hạn: ' + overdueInvoiceCount + ' | Sắp đến hạn (3 ngày): ' + dueSoonInvoiceCount)
+        : 'Trạng thái thu phí: ổn định',
+      priorityText: unpaidInvoiceCount === 0
+        ? 'Đã ổn'
+        : (overdueInvoiceCount > 0 ? 'Ưu tiên cao' : 'Ưu tiên trung bình'),
+      priorityClass: unpaidInvoiceCount === 0
+        ? 'staff-task-priority-ok'
+        : (overdueInvoiceCount > 0 ? 'staff-task-priority-high' : 'staff-task-priority-medium'),
+      action: 'show(\'s-staff-invoice-manage\')'
+    }
+  ];
+
+  const uiState = getStaffTaskUiState();
+  const listCollapsed = !!uiState.listCollapsed;
+  const toggleIcon = listCollapsed ? '&#9656;' : '&#9662;';
+  const toggleLabel = listCollapsed
+    ? 'Mở rộng danh sách công việc'
+    : 'Thu gọn danh sách công việc';
+
+  const headerToggleBtn = byId('staffTaskListToggleBtn');
+  if (headerToggleBtn) {
+    headerToggleBtn.setAttribute('aria-label', toggleLabel);
+    headerToggleBtn.setAttribute('aria-expanded', listCollapsed ? 'false' : 'true');
+    headerToggleBtn.innerHTML = toggleIcon;
+  }
+
+  let html = '';
+  html += '<div class="staff-task-list-body' + (listCollapsed ? ' staff-task-list-body-collapsed' : '') + '">';
+  for (i = 0; i < tasks.length; i++) {
+    const task = tasks[i];
+    html += '<article class="notif-item staff-task-item staff-task-item-clickable" role="button" tabindex="0" data-inline-action="' + task.action + '">' +
+      '<div class="staff-task-head">' +
+      '<div class="staff-task-title">' + task.title + '</div>' +
+      '<div class="staff-task-head-right">' +
+      '<span class="staff-task-priority ' + task.priorityClass + '">' + task.priorityText + '</span>' +
+      '</div>' +
+      '</div>' +
+      '<div class="staff-task-meta">' + task.meta + '</div>' +
+      '</article>';
+  }
+  html += '</div>';
+
+  wrap.innerHTML = html || getEmptyStateCardHtml('Không có công việc cần xử lý', 'Tất cả đầu việc đã ở trạng thái ổn định.');
+  if (typeof normalizeInlineHandlersToDelegation === 'function') {
+    normalizeInlineHandlersToDelegation(wrap);
+  }
+}
+
 function renderStaffSidebarStats() {
   const acc = byId('staffSideAccountCount');
   const cls = byId('staffSideClassCount');
   const ntc = byId('staffSideNoticeCount');
   const pendingLeave = byId('pendingLeaveCount');
   const unpaidInvoice = byId('unpaidInvoiceCount');
+  const staffHomeTotalAccounts = byId('statTotalAccounts');
+  const staffHomeActiveClasses = byId('statTotalClasses');
+  const staffHomePendingLeave = byId('statPendingLeave');
+  const staffHomeUnpaidInvoice = byId('statUnpaidInvoice');
+
+  function parseClassDate(value) {
+    const raw = String(value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    let parts = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (parts) {
+      const isoDate = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
+      if (!Number.isNaN(isoDate.getTime())) {
+        isoDate.setHours(0, 0, 0, 0);
+        return isoDate;
+      }
+    }
+
+    parts = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (parts) {
+      const vnDate = new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1]));
+      if (!Number.isNaN(vnDate.getTime())) {
+        vnDate.setHours(0, 0, 0, 0);
+        return vnDate;
+      }
+    }
+
+    const fallback = new Date(raw);
+    if (Number.isNaN(fallback.getTime())) {
+      return null;
+    }
+    fallback.setHours(0, 0, 0, 0);
+    return fallback;
+  }
+
+  const accountCount = Array.isArray(db.accounts) ? db.accounts.length : 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let classCount = 0;
+  let i;
+  for (i = 0; i < db.classes.length; i++) {
+    const clsItem = db.classes[i] || {};
+    const statusText = String(clsItem.status || clsItem.state || '').toLowerCase();
+    if (clsItem.isActive === false || statusText === 'inactive' || statusText === 'closed' || statusText === 'archived' || statusText === 'deleted' || statusText === 'ended' || statusText === 'completed') {
+      continue;
+    }
+
+    if (!Array.isArray(clsItem.studentIds) || clsItem.studentIds.length === 0) {
+      continue;
+    }
+
+    const endDate = parseClassDate(clsItem.endDate || clsItem.endAt || clsItem.finishDate || clsItem.closedAt || clsItem.classEndDate);
+    if (endDate && endDate < today) {
+      continue;
+    }
+
+    classCount += 1;
+  }
+
+  let noticeCount = 0;
+  for (i = 0; i < db.notifications.length; i++) {
+    if (db.notifications[i].audience === 'all-staff') {
+      noticeCount += 1;
+    }
+  }
+
+  let pendingLeaveCount = 0;
+  for (i = 0; i < db.leaveRequests.length; i++) {
+    if (db.leaveRequests[i].status === 'pending') {
+      pendingLeaveCount += 1;
+    }
+  }
+
+  let unpaidInvoiceCount = 0;
+  for (i = 0; i < db.invoices.length; i++) {
+    if (db.invoices[i].status === 'unpaid') {
+      unpaidInvoiceCount += 1;
+    }
+  }
+
   if (acc) {
-    acc.textContent = db.accounts.length + ' tài khoản đang hoạt động';
+    acc.textContent = accountCount + ' tài khoản đang hoạt động';
   }
   if (cls) {
-    cls.textContent = db.classes.length + ' lớp đang quản lý';
+    cls.textContent = classCount + ' lớp đang quản lý';
   }
   if (ntc) {
-    let i;
-    let cnt = 0;
-    for (i = 0; i < db.notifications.length; i++) {
-      if (db.notifications[i].audience === 'all-staff') {
-        cnt += 1;
-      }
-    }
-    ntc.textContent = cnt + ' thông báo gửi nhân viên';
+    ntc.textContent = noticeCount + ' thông báo gửi nhân viên';
   }
-
   if (pendingLeave) {
-    let i;
-    let p = 0;
-    for (i = 0; i < db.leaveRequests.length; i++) {
-      if (db.leaveRequests[i].status === 'pending') {
-        p += 1;
-      }
-    }
-    pendingLeave.textContent = String(p);
+    pendingLeave.textContent = String(pendingLeaveCount);
+  }
+  if (unpaidInvoice) {
+    unpaidInvoice.textContent = String(unpaidInvoiceCount);
   }
 
-  if (unpaidInvoice) {
-    let j;
-    let u = 0;
-    for (j = 0; j < db.invoices.length; j++) {
-      if (db.invoices[j].status === 'unpaid') {
-        u += 1;
-      }
-    }
-    unpaidInvoice.textContent = String(u);
+  if (staffHomeTotalAccounts) {
+    staffHomeTotalAccounts.textContent = String(accountCount);
   }
+  if (staffHomeActiveClasses) {
+    staffHomeActiveClasses.textContent = String(classCount);
+  }
+  if (staffHomePendingLeave) {
+    staffHomePendingLeave.textContent = String(pendingLeaveCount);
+  }
+  if (staffHomeUnpaidInvoice) {
+    staffHomeUnpaidInvoice.textContent = String(unpaidInvoiceCount);
+  }
+
+  renderStaffHomeTaskList({
+    pendingLeaveCount: pendingLeaveCount,
+    unpaidInvoiceCount: unpaidInvoiceCount
+  });
 }
 
 function renderSideCalendars() {

@@ -510,6 +510,7 @@ const state = {
   selectedStudentCalendarDate: '',
   teacherCalendarYear: null,
   teacherCalendarMonth: null,
+  accountRoleSort: 'all',
   selectedLeaveApprovalTab: 'pending',
   selectedInvoiceFilter: 'all',
   selectedInvoiceId: '',
@@ -617,6 +618,7 @@ function getPersistedStateSnapshot() {
     selectedStudentCalendarDate: state.selectedStudentCalendarDate,
     teacherCalendarYear: state.teacherCalendarYear,
     teacherCalendarMonth: state.teacherCalendarMonth,
+    accountRoleSort: state.accountRoleSort,
     selectedLeaveApprovalTab: state.selectedLeaveApprovalTab,
     selectedInvoiceFilter: state.selectedInvoiceFilter,
     selectedInvoiceId: state.selectedInvoiceId,
@@ -665,6 +667,9 @@ function applyPersistedStateSnapshot(snapshot) {
   }
   if (typeof snapshot.teacherCalendarMonth === 'number') {
     state.teacherCalendarMonth = snapshot.teacherCalendarMonth;
+  }
+  if (snapshot.accountRoleSort === 'all' || snapshot.accountRoleSort === 'student' || snapshot.accountRoleSort === 'staff' || snapshot.accountRoleSort === 'teacher') {
+    state.accountRoleSort = snapshot.accountRoleSort;
   }
   if (typeof snapshot.selectedLeaveApprovalTab === 'string') {
     state.selectedLeaveApprovalTab = snapshot.selectedLeaveApprovalTab;

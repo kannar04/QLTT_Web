@@ -49,6 +49,392 @@ function getPortalRoleSubtitle(role) {
   return 'khách';
 }
 
+function closeHeaderAccountMenus() {
+  const wraps = document.querySelectorAll('.account-menu-wrap.open');
+  let i;
+  for (i = 0; i < wraps.length; i++) {
+    wraps[i].classList.remove('open');
+    const trigger = wraps[i].querySelector('.account-menu-trigger');
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('menu-open');
+    }
+  }
+}
+
+function bindHeaderAccountMenuDismiss() {
+  if (window.__studyhomeAccountMenuBound) {
+    return;
+  }
+  document.addEventListener('click', function (event) {
+    if (!event.target.closest('.account-menu-wrap')) {
+      closeHeaderAccountMenus();
+    }
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !(typeof getOpenModal === 'function' && getOpenModal())) {
+      closeHeaderAccountMenus();
+    }
+  });
+  window.__studyhomeAccountMenuBound = true;
+}
+
+function toggleHeaderAccountMenu(event, element) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const wrap = element ? element.closest('.account-menu-wrap') : null;
+  if (!wrap) {
+    return;
+  }
+  const shouldOpen = !wrap.classList.contains('open');
+  closeHeaderAccountMenus();
+  if (!shouldOpen) {
+    return;
+  }
+  wrap.classList.add('open');
+  const trigger = wrap.querySelector('.account-menu-trigger');
+  if (trigger) {
+    trigger.setAttribute('aria-expanded', 'true');
+    trigger.classList.add('menu-open');
+  }
+}
+
+function getCurrentPortalUser() {
+  return getAccountById(state.currentUserId);
+}
+
+function formatProfileFieldValue(value) {
+  if (value === null || value === undefined) {
+    return '....';
+  }
+  const text = String(value).trim();
+  return text ? text : '....';
+}
+
+function toIsoDateValue(day, month, year) {
+  const d = Number(day);
+  const m = Number(month);
+  const y = Number(year);
+  if (!y || y < 1900 || y > 2100 || !m || m < 1 || m > 12 || !d || d < 1 || d > 31) {
+    return '';
+  }
+  return String(y).padStart(4, '0') + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+}
+
+function getProfileBirthDateInputValue(user) {
+  if (!user) {
+    return '';
+  }
+  const rawBirthDate = normalizeProfileInputValue(user.birthDate);
+  if (rawBirthDate) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(rawBirthDate)) {
+      return rawBirthDate;
+    }
+    let parts = rawBirthDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (parts) {
+      return toIsoDateValue(parts[1], parts[2], parts[3]);
+    }
+    parts = rawBirthDate.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+    if (parts) {
+      return toIsoDateValue(parts[1], parts[2], parts[3]);
+    }
+    parts = rawBirthDate.match(/^(\d{4})$/);
+    if (parts) {
+      return toIsoDateValue(1, 1, parts[1]);
+    }
+  }
+  if (user.birthYear) {
+    return toIsoDateValue(1, 1, user.birthYear);
+  }
+  return '';
+}
+
+function formatBirthDateForSave(isoDate) {
+  const raw = normalizeProfileInputValue(isoDate);
+  const parts = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!parts) {
+    return '';
+  }
+  return parts[3] + '/' + parts[2] + '/' + parts[1];
+}
+
+function getProfileRoleText(user) {
+  if (!user) {
+    return '....';
+  }
+  return getRoleLabel(user.role);
+}
+
+function normalizeProfileInputValue(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  return String(value).trim();
+}
+
+function setProfileModalInputValue(id, value) {
+  const node = byId(id);
+  if (!node) {
+    return;
+  }
+  node.value = normalizeProfileInputValue(value);
+  clearInputError(node);
+}
+
+function clearProfileModalErrors() {
+  const ids = [
+    'profileSheetFullName',
+    'profileSheetGender',
+    'profileSheetCitizenId',
+    'profileSheetBirthDate',
+    'profileSheetBirthPlace',
+    'profileSheetCountry',
+    'profileSheetEmail',
+    'profileSheetPhone',
+    'profileSheetProvince',
+    'profileSheetWard',
+    'profileSheetAddress'
+  ];
+  let i;
+  for (i = 0; i < ids.length; i++) {
+    clearInputError(byId(ids[i]));
+  }
+}
+
+function extractBirthYear(value) {
+  const text = String(value || '').trim();
+  if (!text) {
+    return 0;
+  }
+  const yearOnly = text.match(/^\d{4}$/);
+  if (yearOnly) {
+    return Number(text);
+  }
+  const endYear = text.match(/(\d{4})$/);
+  if (!endYear) {
+    return 0;
+  }
+  return Number(endYear[1]);
+}
+
+function renderCurrentUserProfileModal() {
+  const user = getCurrentPortalUser();
+  if (!user) {
+    return false;
+  }
+
+  setProfileModalInputValue('profileSheetAccount', user.id);
+  setProfileModalInputValue('profileSheetRole', getProfileRoleText(user));
+  setProfileModalInputValue('profileSheetFullName', user.name);
+  setProfileModalInputValue('profileSheetGender', user.gender);
+  setProfileModalInputValue('profileSheetCitizenId', user.citizenId || user.identityNumber || user.nationalId);
+  setProfileModalInputValue('profileSheetBirthDate', getProfileBirthDateInputValue(user));
+  setProfileModalInputValue('profileSheetBirthPlace', user.birthPlace);
+  setProfileModalInputValue('profileSheetCountry', user.nationality || user.country || 'Việt Nam');
+  setProfileModalInputValue('profileSheetEmail', user.email);
+  setProfileModalInputValue('profileSheetPhone', user.phone);
+  setProfileModalInputValue('profileSheetProvince', user.province || user.city);
+  setProfileModalInputValue('profileSheetWard', user.ward || user.district);
+  setProfileModalInputValue('profileSheetAddress', user.address);
+
+  const accountChip = byId('profileSheetAccountDisplay');
+  if (accountChip) {
+    accountChip.textContent = 'TK: ' + formatProfileFieldValue(user.id);
+  }
+
+  clearProfileModalErrors();
+  return true;
+}
+
+function openCurrentUserProfileModal() {
+  closeHeaderAccountMenus();
+  if (!renderCurrentUserProfileModal()) {
+    toast('Bạn cần đăng nhập để xem thông tin cá nhân.', 'error');
+    return;
+  }
+  if (typeof openModal === 'function') {
+    openModal('userProfileModal');
+  }
+}
+
+function refreshCurrentUserProfileModal() {
+  const user = getCurrentPortalUser();
+  if (!user) {
+    toast('Không thể cập nhật thông tin cá nhân lúc này.', 'error');
+    return;
+  }
+
+  const fullNameInput = byId('profileSheetFullName');
+  const genderInput = byId('profileSheetGender');
+  const citizenIdInput = byId('profileSheetCitizenId');
+  const birthDateInput = byId('profileSheetBirthDate');
+  const birthPlaceInput = byId('profileSheetBirthPlace');
+  const countryInput = byId('profileSheetCountry');
+  const emailInput = byId('profileSheetEmail');
+  const phoneInput = byId('profileSheetPhone');
+  const provinceInput = byId('profileSheetProvince');
+  const wardInput = byId('profileSheetWard');
+  const addressInput = byId('profileSheetAddress');
+
+  if (!fullNameInput || !genderInput || !citizenIdInput || !birthDateInput || !birthPlaceInput || !countryInput || !emailInput || !phoneInput || !provinceInput || !wardInput || !addressInput) {
+    toast('Không thể tải biểu mẫu thông tin cá nhân.', 'error');
+    return;
+  }
+
+  clearProfileModalErrors();
+
+  const fullName = fullNameInput.value.trim();
+  const gender = genderInput.value.trim();
+  const citizenId = citizenIdInput.value.trim();
+  const birthDateIso = birthDateInput.value.trim();
+  const birthDate = formatBirthDateForSave(birthDateIso);
+  const birthPlace = birthPlaceInput.value.trim();
+  const country = countryInput.value.trim();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const province = provinceInput.value.trim();
+  const ward = wardInput.value.trim();
+  const address = addressInput.value.trim();
+
+  let invalid = false;
+  if (!fullName) {
+    markInputError(fullNameInput, 'Vui lòng nhập họ tên');
+    invalid = true;
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    markInputError(emailInput, 'Email không đúng định dạng');
+    invalid = true;
+  }
+  if (phone && !/^[0-9]{1,10}$/.test(phone)) {
+    markInputError(phoneInput, 'Số điện thoại chỉ chứa số, tối đa 10 chữ số');
+    invalid = true;
+  }
+
+  if (invalid) {
+    toast('Vui lòng kiểm tra lại thông tin trước khi cập nhật.', 'error');
+    return;
+  }
+
+  user.name = fullName;
+  user.gender = gender;
+  user.citizenId = citizenId;
+  user.identityNumber = citizenId;
+  user.nationalId = citizenId;
+  user.birthDate = birthDate;
+  user.birthPlace = birthPlace;
+  user.email = email;
+  user.phone = phone;
+  user.nationality = country;
+  user.country = country;
+  user.province = province;
+  user.city = province;
+  user.ward = ward;
+  user.district = ward;
+  user.address = address;
+
+  const detectedBirthYear = extractBirthYear(birthDate || birthDateIso);
+  if (detectedBirthYear) {
+    user.birthYear = detectedBirthYear;
+  } else if (!birthDateIso) {
+    user.birthYear = 0;
+  }
+
+  if (typeof logAuditAction === 'function') {
+    logAuditAction('profile-update', 'Cập nhật thông tin cá nhân từ menu tài khoản', { userId: user.id, role: user.role });
+  }
+  scheduleAppSnapshotSave();
+  renderCurrentUserProfileModal();
+  if (typeof renderActiveHeaderUser === 'function') {
+    renderActiveHeaderUser();
+  }
+  if (user.role === 'student' && typeof renderStudentProfile === 'function') {
+    renderStudentProfile();
+  }
+  toast('Đã cập nhật thông tin cá nhân thành công.');
+}
+
+function resetCurrentUserPasswordModal() {
+  const ids = ['headerPasswordCurrent', 'headerPasswordNew', 'headerPasswordConfirm'];
+  let i;
+  for (i = 0; i < ids.length; i++) {
+    const node = byId(ids[i]);
+    if (!node) {
+      continue;
+    }
+    node.value = '';
+    clearInputError(node);
+  }
+}
+
+function openCurrentUserPasswordModal() {
+  closeHeaderAccountMenus();
+  resetCurrentUserPasswordModal();
+  if (typeof openModal === 'function') {
+    openModal('headerPasswordModal');
+  }
+}
+
+function submitCurrentUserPasswordUpdate() {
+  const user = getCurrentPortalUser();
+  if (!user) {
+    toast('Bạn cần đăng nhập để cập nhật mật khẩu.', 'error');
+    return;
+  }
+  const currentInput = byId('headerPasswordCurrent');
+  const newInput = byId('headerPasswordNew');
+  const confirmInput = byId('headerPasswordConfirm');
+  if (!currentInput || !newInput || !confirmInput) {
+    return;
+  }
+
+  clearInputError(currentInput);
+  clearInputError(newInput);
+  clearInputError(confirmInput);
+
+  const currentPass = currentInput.value.trim();
+  const newPass = newInput.value.trim();
+  const confirmPass = confirmInput.value.trim();
+
+  if (!currentPass) {
+    markInputError(currentInput, 'Vui lòng nhập mật khẩu hiện tại');
+    toast('Vui lòng nhập mật khẩu hiện tại', 'error');
+    return;
+  }
+  if (currentPass !== user.password) {
+    markInputError(currentInput, 'Mật khẩu hiện tại không đúng');
+    toast('Mật khẩu hiện tại không đúng', 'error');
+    return;
+  }
+  if (!newPass || newPass.length < 6) {
+    markInputError(newInput, 'Mật khẩu mới phải từ 6 ký tự');
+    toast('Mật khẩu mới phải từ 6 ký tự', 'error');
+    return;
+  }
+  if (newPass === currentPass) {
+    markInputError(newInput, 'Mật khẩu mới phải khác mật khẩu hiện tại');
+    toast('Mật khẩu mới phải khác mật khẩu hiện tại', 'error');
+    return;
+  }
+  if (newPass !== confirmPass) {
+    markInputError(confirmInput, 'Mật khẩu xác nhận không khớp');
+    toast('Mật khẩu xác nhận không khớp', 'error');
+    return;
+  }
+
+  user.password = newPass;
+  if (typeof logAuditAction === 'function') {
+    logAuditAction('password-change', 'Cập nhật mật khẩu từ menu tài khoản', { userId: user.id });
+  }
+  scheduleAppSnapshotSave();
+  resetCurrentUserPasswordModal();
+  if (typeof closeModal === 'function') {
+    closeModal('headerPasswordModal');
+  }
+  toast('Đã cập nhật mật khẩu thành công.');
+}
+
 function buildPortalHeaderHtml(role) {
   const home = getPortalHomeScreen(role);
   const subtitle = getPortalRoleSubtitle(role);
@@ -57,11 +443,20 @@ function buildPortalHeaderHtml(role) {
     '<div class="header-info"><h2>Hệ thống</h2><p>Trung tâm dạy học<br>Dành cho ' + subtitle + '</p></div>' +
     '</div>' +
     '<div class="header-right">' +
-    '<div class="avatar-btn" data-inline-action="performLogout()"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>' +
+    '<div class="account-menu-wrap">' +
+    '<button class="avatar-btn account-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" data-inline-action="toggleHeaderAccountMenu(event, element)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>' +
+    '<div class="account-menu-dropdown">' +
+    '<div class="account-menu-heading">Chức năng tài khoản</div>' +
+    '<button class="account-menu-item" type="button" data-inline-action="openCurrentUserProfileModal()">Thông tin cá nhân</button>' +
+    '<button class="account-menu-item" type="button" data-inline-action="openCurrentUserPasswordModal()">Cập nhật mật khẩu</button>' +
+    '<button class="account-menu-item account-menu-item-danger" type="button" data-inline-action="performLogout()">Đăng xuất</button>' +
+    '</div>' +
+    '</div>' +
     '</div>';
 }
 
 function applyDynamicHeaders() {
+  bindHeaderAccountMenuDismiss();
   const screens = document.querySelectorAll('.screen');
   let i;
   for (i = 0; i < screens.length; i++) {
@@ -74,7 +469,7 @@ function applyDynamicHeaders() {
     if (!header) {
       continue;
     }
-    const signature = role + '-v1';
+    const signature = role + '-v2';
     if (header.dataset.dynamicHeaderSignature === signature) {
       continue;
     }
@@ -315,6 +710,18 @@ function applyDynamicBreadcrumbs() {
 }
 
 function applyDynamicNavbars() {
+  const staffRootScreens = {
+    's-staff-home': true,
+    's-account-list': true,
+    's-student-profile-search': true,
+    's-class-manage': true,
+    's-timetable': true,
+    's-staff-leave-approval': true,
+    's-staff-invoice-manage': true,
+    's-staff-notification-send': true,
+    's-revenue': true,
+    's-report': true
+  };
   const screens = document.querySelectorAll('.screen');
   let i;
   for (i = 0; i < screens.length; i++) {
@@ -337,7 +744,9 @@ function applyDynamicNavbars() {
         revenue: id === 's-revenue',
         report: id.indexOf('s-report') === 0
       };
+      const showBackButton = !staffRootScreens[id];
       nav.innerHTML =
+        (showBackButton ? '<button class="nav-btn" data-inline-action="goBack()">Quay lại</button>' : '') +
         '<button class="nav-btn ' + (active.home ? 'active' : '') + '" data-inline-action="show(\'s-staff-home\')">Trang chủ</button>' +
         '<button class="nav-btn ' + (active.account ? 'active' : '') + '" data-inline-action="show(\'s-account-list\')">Tài khoản</button>' +
         '<button class="nav-btn ' + (active.profile ? 'active' : '') + '" data-inline-action="show(\'s-student-profile-search\')">Hồ sơ học viên</button>' +
@@ -415,7 +824,7 @@ function applyAccessibilityPolish(root) {
     }
   }
 
-  const clickableNodes = scope.querySelectorAll('div[onclick], span[onclick], div[data-inline-action], span[data-inline-action]');
+  const clickableNodes = scope.querySelectorAll('div[onclick], span[onclick], article[onclick], div[data-inline-action], span[data-inline-action], article[data-inline-action]');
   for (i = 0; i < clickableNodes.length; i++) {
     if (!clickableNodes[i].hasAttribute('role')) {
       clickableNodes[i].setAttribute('role', 'button');

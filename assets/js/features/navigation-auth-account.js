@@ -450,11 +450,32 @@ function renderAccountTable() {
     return;
   }
   const qInput = byId('accountSearchInput');
+  const roleSortInput = byId('accountRoleSort');
   const q = qInput && qInput.value ? qInput.value.trim().toLowerCase() : '';
+
+  function normalizeAccountRoleSort(value) {
+    if (value === 'student' || value === 'staff' || value === 'teacher') {
+      return value;
+    }
+    return 'all';
+  }
+
+  let roleSort = normalizeAccountRoleSort(state.accountRoleSort);
+  if (roleSortInput) {
+    if (roleSortInput.value !== roleSort) {
+      roleSortInput.value = roleSort;
+    }
+    roleSort = normalizeAccountRoleSort(roleSortInput.value);
+  }
+  state.accountRoleSort = roleSort;
+
   const filtered = [];
   let i;
   for (i = 0; i < db.accounts.length; i++) {
     const item = db.accounts[i];
+    if (roleSort !== 'all' && item.role !== roleSort) {
+      continue;
+    }
     if (q && item.id.toLowerCase().indexOf(q) === -1 && item.name.toLowerCase().indexOf(q) === -1) {
       continue;
     }
@@ -465,7 +486,7 @@ function renderAccountTable() {
     const virtualized = renderVirtualizedTableRows({
       bodyId: 'accountTableBody',
       rows: filtered,
-      signature: 'account|' + q + '|' + filtered.length,
+      signature: 'account|' + q + '|' + roleSort + '|' + filtered.length,
       colCount: 7,
       rowHeight: 52,
       maxHeight: 540,
@@ -531,7 +552,10 @@ function renderAccountTable() {
     renderTablePager(pager, state.accountTablePage, totalPages, filtered.length, 'setAccountTablePage');
   }
   if (typeof announceStatus === 'function') {
-    announceStatus('Bảng tài khoản có ' + filtered.length + ' kết quả, trang ' + state.accountTablePage + '/' + totalPages + '.', 'polite');
+    const roleFilterLabel = roleSort === 'all'
+      ? ''
+      : (roleSort === 'student' ? ', lọc học viên' : (roleSort === 'staff' ? ', lọc nhân viên' : ', lọc giáo viên'));
+    announceStatus('Bảng tài khoản có ' + filtered.length + ' kết quả' + roleFilterLabel + ', trang ' + state.accountTablePage + '/' + totalPages + '.', 'polite');
   }
 }
 
