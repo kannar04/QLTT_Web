@@ -824,7 +824,7 @@ function applyAccessibilityPolish(root) {
     }
   }
 
-  const clickableNodes = scope.querySelectorAll('div[onclick], span[onclick], div[data-inline-action], span[data-inline-action]');
+  const clickableNodes = scope.querySelectorAll('div[onclick], span[onclick], article[onclick], div[data-inline-action], span[data-inline-action], article[data-inline-action]');
   for (i = 0; i < clickableNodes.length; i++) {
     if (!clickableNodes[i].hasAttribute('role')) {
       clickableNodes[i].setAttribute('role', 'button');

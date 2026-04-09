@@ -166,11 +166,12 @@
     </div>
 
     <div class="panel mt16">
-      <span class="panel-tab">Công việc cần xử lý</span>
-      <div class="notif-stack">
-        <div class="notif-item"><div class="notif-text"><span class="notif-link" data-inline-action="show('s-staff-leave-approval')">2 đơn xin nghỉ đang chờ duyệt.</span></div><div class="notif-time">Hạn xử lý: hôm nay</div></div>
-        <div class="notif-item"><div class="notif-text">1 lớp cần cập nhật sĩ số sau khi thêm học viên mới.</div><div class="notif-time">Ưu tiên: trung bình</div></div>
-        <div class="notif-item"><div class="notif-text">3 khoản học phí còn nợ cần gửi nhắc nhở.</div><div class="notif-time">Ưu tiên: cao</div></div>
+      <div class="staff-task-panel-head">
+        <span class="panel-tab">Công việc cần xử lý</span>
+        <button class="staff-task-list-toggle-btn" id="staffTaskListToggleBtn" type="button" aria-label="Thu gọn danh sách công việc" aria-expanded="true" data-inline-action="toggleStaffTaskListCollapse()">&#9662;</button>
+      </div>
+      <div class="notif-stack staff-task-list" id="staffHomeTaskList">
+        <div class="notif-item">Đang tải danh sách công việc...</div>
       </div>
     </div>
     </div>
@@ -192,6 +193,12 @@
       </div>
       <div class="flex flex-center gap12 mb16">
         <input class="fi input-search-wide" id="accountSearchInput" placeholder="Tìm theo mã hoặc họ tên">
+        <select class="fi max-w-260" id="accountRoleSort">
+          <option value="all">Tất cả</option>
+          <option value="student">Học viên</option>
+          <option value="staff">Nhân viên</option>
+          <option value="teacher">Giáo viên</option>
+        </select>
       </div>
       <div class="tbl-wrap"><table class="tbl">
         <thead><tr><th class="th-w-110">Mã tài khoản</th><th>Họ và tên</th><th class="th-w-90">Năm sinh</th><th class="th-w-80">Giới tính</th><th class="th-w-90">Vai trò</th><th class="th-w-160">Môn / Lớp</th><th class="th-w-100">Hành động</th></tr></thead>
