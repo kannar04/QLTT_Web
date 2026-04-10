@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PTTK - API Swagger (StudyHome)</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>
+    :root {
+      --head-grad-1: #0f3d8f;
+      --head-grad-2: #0b5ed7;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f3f6fb;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, var(--head-grad-1), var(--head-grad-2));
+      color: #fff;
+      padding: 16px 18px 14px;
+      box-shadow: 0 8px 20px rgba(18, 53, 110, 0.24);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .topbar p {
+      margin: 8px 0 0;
+      opacity: 0.95;
+      font-size: 14px;
+    }
+
+    #swagger-ui {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Swagger API - StudyHome (Nen tang web dong)</h1>
+    <p>
+      Dac ta API toi uu theo mo hinh du lieu va nghiep vu dang co trong ban web tinh. File nay doc lap, khong tac dong den UI hien tai.
+    </p>
+  </header>
+
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    const spec = {
+      openapi: "3.0.3",
+      info: {
+        title: "StudyHome Dynamic API",
+        version: "1.0.0",
+        description: "Dac ta API tong hop cho he thong StudyHome khi chuyen tu web tinh sang web dong."
+      },
+      servers: [
+        { url: "/api/v1", description: "Moi truong chinh" }
+      ],
+      tags: [
+        { name: "Xac thuc" },
+        { name: "Tai khoan va Ho so" },
+        { name: "Lop hoc" },
+        { name: "Hoc tap" },
+        { name: "Hoc phi" },
+        { name: "Xin nghi va Thong bao" },
+        { name: "Bao cao" },
+        { name: "Audit" }
+      ],
+      paths: {
+        "/auth/login": {
+          post: {
+            tags: ["Xac thuc"],
+            summary: "Dang nhap theo vai tro",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/LoginRequest" }
+                }
+              }
+            },
+            responses: {
+              "200": {
+                description: "Dang nhap thanh cong",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/AuthResponse" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/auth/forgot-password/reset": {
+          post: {
+            tags: ["Xac thuc"],
+            summary: "Khoi phuc mat khau ve mac dinh",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ForgotPasswordResetRequest" }
+                }
+              }
+            },
+            responses: {
+              "200": { description: "Khoi phuc thanh cong" }
+            }
+          }
+        },
+        "/accounts": {
+          get: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Lay danh sach tai khoan",
+            parameters: [
+              { name: "role", in: "query", schema: { type: "string", enum: ["all", "staff", "teacher", "student"] } },
+              { name: "q", in: "query", schema: { type: "string" } },
+              { name: "page", in: "query", schema: { type: "integer", default: 1 } },
+              { name: "pageSize", in: "query", schema: { type: "integer", default: 12 } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/AccountListResponse" }
+                  }
+                }
+              }
+            }
+          },
+          post: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Tao tai khoan moi",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/AccountCreateRequest" }
+                }
+              }
+            },
+            responses: {
+              "201": {
+                description: "Created",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Account" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/accounts/{id}": {
+          get: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Lay chi tiet tai khoan",
+            parameters: [
+              { name: "id", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": { schema: { $ref: "#/components/schemas/Account" } }
+                }
+              }
+            }
+          },
+          put: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Cap nhat tai khoan",
+            parameters: [
+              { name: "id", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/AccountUpdateRequest" }
+                }
+              }
+            },
+            responses: {
+              "200": {
+                description: "Updated",
+                content: {
+                  "application/json": { schema: { $ref: "#/components/schemas/Account" } }
+                }
+              }
+            }
+          }
+        },
+        "/profiles/me": {
+          get: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Thong tin ca nhan dang dang nhap",
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": { schema: { $ref: "#/components/schemas/Account" } }
+                }
+              }
+            }
+          },
+          put: {
+            tags: ["Tai khoan va Ho so"],
+            summary: "Cap nhat thong tin ca nhan",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ProfileUpdateRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Updated" } }
+          }
+        },
+        "/classes": {
+          get: {
+            tags: ["Lop hoc"],
+            summary: "Danh sach lop hoc",
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/ClassRoom" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          post: {
+            tags: ["Lop hoc"],
+            summary: "Tao lop hoc moi",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ClassCreateRequest" }
+                }
+              }
+            },
+            responses: {
+              "201": {
+                description: "Created",
+                content: {
+                  "application/json": { schema: { $ref: "#/components/schemas/ClassRoom" } }
+                }
+              }
+            }
+          }
+        },
+        "/classes/{classCode}": {
+          get: {
+            tags: ["Lop hoc"],
+            summary: "Chi tiet lop hoc",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "200": { description: "OK" } }
+          },
+          put: {
+            tags: ["Lop hoc"],
+            summary: "Cap nhat lop hoc",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ClassUpdateRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Updated" } }
+          },
+          delete: {
+            tags: ["Lop hoc"],
+            summary: "Xoa lop hoc",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "204": { description: "No content" } }
+          }
+        },
+        "/classes/{classCode}/students": {
+          post: {
+            tags: ["Lop hoc"],
+            summary: "Them hoc vien vao lop",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ClassAddStudentRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Added" } }
+          }
+        },
+        "/classes/{classCode}/students/{studentId}": {
+          delete: {
+            tags: ["Lop hoc"],
+            summary: "Xoa hoc vien khoi lop",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } },
+              { name: "studentId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "204": { description: "Removed" } }
+          }
+        },
+        "/classes/{classCode}/materials": {
+          get: {
+            tags: ["Hoc tap"],
+            summary: "Danh sach tai lieu theo lop",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "200": { description: "OK" } }
+          },
+          post: {
+            tags: ["Hoc tap"],
+            summary: "Tai len tai lieu",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/MaterialCreateRequest" }
+                }
+              }
+            },
+            responses: { "201": { description: "Created" } }
+          }
+        },
+        "/classes/{classCode}/homeworks": {
+          get: {
+            tags: ["Hoc tap"],
+            summary: "Danh sach bai tap theo lop",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "200": { description: "OK" } }
+          },
+          post: {
+            tags: ["Hoc tap"],
+            summary: "Tao bai tap",
+            parameters: [
+              { name: "classCode", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/HomeworkCreateRequest" }
+                }
+              }
+            },
+            responses: { "201": { description: "Created" } }
+          }
+        },
+        "/homeworks/{homeworkId}/submissions": {
+          post: {
+            tags: ["Hoc tap"],
+            summary: "Nop bai tap",
+            parameters: [
+              { name: "homeworkId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/SubmissionCreateRequest" }
+                }
+              }
+            },
+            responses: {
+              "201": {
+                description: "Created",
+                content: {
+                  "application/json": { schema: { $ref: "#/components/schemas/Submission" } }
+                }
+              }
+            }
+          }
+        },
+        "/submissions/{submissionId}/grade": {
+          put: {
+            tags: ["Hoc tap"],
+            summary: "Cham diem bai nop",
+            parameters: [
+              { name: "submissionId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/SubmissionGradeRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Updated" } }
+          }
+        },
+        "/grades": {
+          get: {
+            tags: ["Hoc tap"],
+            summary: "Lay bang diem",
+            parameters: [
+              { name: "classCode", in: "query", schema: { type: "string" } },
+              { name: "studentId", in: "query", schema: { type: "string" } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/GradeEntry" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          put: {
+            tags: ["Hoc tap"],
+            summary: "Cap nhat hang loat bang diem",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/GradeBulkUpdateRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Updated" } }
+          }
+        },
+        "/leave-requests": {
+          get: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Danh sach don xin nghi",
+            parameters: [
+              { name: "status", in: "query", schema: { type: "string", enum: ["pending", "approved", "rejected"] } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/LeaveRequest" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          post: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Gui don xin nghi",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/LeaveRequestCreateRequest" }
+                }
+              }
+            },
+            responses: { "201": { description: "Created" } }
+          }
+        },
+        "/leave-requests/{leaveRequestId}/approve": {
+          put: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Duyet don xin nghi",
+            parameters: [
+              { name: "leaveRequestId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "200": { description: "Approved" } }
+          }
+        },
+        "/leave-requests/{leaveRequestId}/reject": {
+          put: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Tu choi don xin nghi",
+            parameters: [
+              { name: "leaveRequestId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/LeaveRejectRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Rejected" } }
+          }
+        },
+        "/invoices": {
+          get: {
+            tags: ["Hoc phi"],
+            summary: "Danh sach hoa don",
+            parameters: [
+              { name: "status", in: "query", schema: { type: "string", enum: ["all", "unpaid", "paid"] } },
+              { name: "studentId", in: "query", schema: { type: "string" } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Invoice" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/invoices/bulk": {
+          post: {
+            tags: ["Hoc phi"],
+            summary: "Tao hoa don hang loat theo lop",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/BulkInvoiceCreateRequest" }
+                }
+              }
+            },
+            responses: { "201": { description: "Created" } }
+          }
+        },
+        "/invoices/{invoiceId}/pay": {
+          put: {
+            tags: ["Hoc phi"],
+            summary: "Xac nhan da thu hoc phi",
+            parameters: [
+              { name: "invoiceId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/InvoiceMarkPaidRequest" }
+                }
+              }
+            },
+            responses: { "200": { description: "Updated" } }
+          }
+        },
+        "/notifications": {
+          get: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Lay danh sach thong bao theo doi tuong",
+            parameters: [
+              { name: "to", in: "query", schema: { type: "string" } },
+              { name: "read", in: "query", schema: { type: "boolean" } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Notification" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          post: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Gui thong bao",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/NotificationCreateRequest" }
+                }
+              }
+            },
+            responses: { "201": { description: "Created" } }
+          }
+        },
+        "/notifications/{notificationId}/read": {
+          put: {
+            tags: ["Xin nghi va Thong bao"],
+            summary: "Danh dau da doc",
+            parameters: [
+              { name: "notificationId", in: "path", required: true, schema: { type: "string" } }
+            ],
+            responses: { "200": { description: "Updated" } }
+          }
+        },
+        "/reports/overview": {
+          get: {
+            tags: ["Bao cao"],
+            summary: "Tong quan van hanh",
+            responses: { "200": { description: "OK" } }
+          }
+        },
+        "/reports/revenue": {
+          get: {
+            tags: ["Bao cao"],
+            summary: "Bao cao doanh thu",
+            parameters: [
+              { name: "fromDate", in: "query", schema: { type: "string", format: "date" } },
+              { name: "toDate", in: "query", schema: { type: "string", format: "date" } }
+            ],
+            responses: { "200": { description: "OK" } }
+          }
+        },
+        "/audit-logs": {
+          get: {
+            tags: ["Audit"],
+            summary: "Lay lich su thao tac he thong",
+            parameters: [
+              { name: "actorId", in: "query", schema: { type: "string" } },
+              { name: "action", in: "query", schema: { type: "string" } }
+            ],
+            responses: {
+              "200": {
+                description: "OK",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/AuditLog" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT"
+          }
+        },
+        schemas: {
+          LoginRequest: {
+            type: "object",
+            required: ["username", "password", "role"],
+            properties: {
+              username: { type: "string", example: "HV001" },
+              password: { type: "string", example: "111111" },
+              role: { type: "string", enum: ["staff", "teacher", "student"], example: "student" }
+            }
+          },
+          AuthResponse: {
+            type: "object",
+            properties: {
+              accessToken: { type: "string" },
+              refreshToken: { type: "string" },
+              expiresIn: { type: "integer", example: 3600 },
+              user: { $ref: "#/components/schemas/Account" }
+            }
+          },
+          ForgotPasswordResetRequest: {
+            type: "object",
+            required: ["role", "accountId"],
+            properties: {
+              role: { type: "string", enum: ["staff", "teacher", "student"] },
+              accountId: { type: "string", example: "HV001" },
+              resetTo: { type: "string", default: "111111" }
+            }
+          },
+          Account: {
+            type: "object",
+            properties: {
+              id: { type: "string", example: "HV001" },
+              name: { type: "string", example: "Hoc vien 1" },
+              role: { type: "string", enum: ["staff", "teacher", "student"] },
+              birthYear: { type: "integer", example: 2007 },
+              gender: { type: "string", example: "Nu" },
+              classCode: { type: "string", example: "L01" },
+              subjectCodes: {
+                type: "array",
+                items: { type: "string" }
+              },
+              phone: { type: "string", example: "0903000001" },
+              email: { type: "string", example: "hv001@studyhome.vn" },
+              address: { type: "string", example: "Quan 1, TP.HCM" },
+              status: { type: "string", enum: ["active", "inactive"], default: "active" }
+            }
+          },
+          AccountCreateRequest: {
+            type: "object",
+            required: ["id", "name", "password", "role"],
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              password: { type: "string" },
+              role: { type: "string", enum: ["staff", "teacher", "student"] },
+              email: { type: "string" },
+              phone: { type: "string" },
+              gender: { type: "string" }
+            }
+          },
+          AccountUpdateRequest: {
+            type: "object",
+            properties: {
+              password: { type: "string" },
+              name: { type: "string" },
+              birthYear: { type: "integer" },
+              gender: { type: "string" },
+              email: { type: "string" },
+              phone: { type: "string" },
+              classCode: { type: "string" },
+              address: { type: "string" },
+              status: { type: "string", enum: ["active", "inactive"] }
+            }
+          },
+          ProfileUpdateRequest: {
+            type: "object",
+            properties: {
+              email: { type: "string" },
+              phone: { type: "string" },
+              address: { type: "string" },
+              fullName: { type: "string" },
+              gender: { type: "string" },
+              citizenId: { type: "string" },
+              birthDate: { type: "string", format: "date" },
+              birthPlace: { type: "string" },
+              country: { type: "string" },
+              province: { type: "string" },
+              ward: { type: "string" }
+            }
+          },
+          AccountListResponse: {
+            type: "object",
+            properties: {
+              items: {
+                type: "array",
+                items: { $ref: "#/components/schemas/Account" }
+              },
+              page: { type: "integer" },
+              pageSize: { type: "integer" },
+              total: { type: "integer" }
+            }
+          },
+          ClassRoom: {
+            type: "object",
+            properties: {
+              code: { type: "string", example: "L01" },
+              name: { type: "string", example: "Toan - Co ban" },
+              subject: { type: "string", example: "Toan" },
+              level: { type: "string", example: "Co ban" },
+              capacity: { type: "integer", example: 32 },
+              room: { type: "string", example: "P.201" },
+              teacher: { type: "string", example: "GV001" },
+              schedulePattern: { type: "string", example: "T2-T4-T6" },
+              startTime: { type: "string", example: "17:45" },
+              endTime: { type: "string", example: "19:15" },
+              studentIds: {
+                type: "array",
+                items: { type: "string" }
+              }
+            }
+          },
+          ClassCreateRequest: {
+            type: "object",
+            required: ["code", "name"],
+            properties: {
+              code: { type: "string" },
+              name: { type: "string" },
+              subject: { type: "string" },
+              capacity: { type: "integer" },
+              room: { type: "string" },
+              teacher: { type: "string" },
+              dayOfWeek: { type: "string" },
+              startTime: { type: "string" },
+              endTime: { type: "string" }
+            }
+          },
+          ClassUpdateRequest: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              room: { type: "string" },
+              teacher: { type: "string" },
+              dayOfWeek: { type: "string" },
+              startTime: { type: "string" },
+              endTime: { type: "string" }
+            }
+          },
+          ClassAddStudentRequest: {
+            type: "object",
+            required: ["studentId"],
+            properties: {
+              studentId: { type: "string", example: "HV001" }
+            }
+          },
+          MaterialCreateRequest: {
+            type: "object",
+            required: ["title", "teacherId"],
+            properties: {
+              title: { type: "string" },
+              session: { type: "string" },
+              fileName: { type: "string" },
+              teacherId: { type: "string" }
+            }
+          },
+          HomeworkCreateRequest: {
+            type: "object",
+            required: ["title", "due", "teacherId"],
+            properties: {
+              title: { type: "string" },
+              open: { type: "string", format: "date" },
+              due: { type: "string", format: "date" },
+              content: { type: "string" },
+              teacherId: { type: "string" }
+            }
+          },
+          SubmissionCreateRequest: {
+            type: "object",
+            required: ["studentId", "fileName"],
+            properties: {
+              studentId: { type: "string", example: "HV001" },
+              fileName: { type: "string", example: "bt1.pdf" }
+            }
+          },
+          SubmissionGradeRequest: {
+            type: "object",
+            required: ["score"],
+            properties: {
+              score: { type: "number", minimum: 0, maximum: 10 },
+              comment: { type: "string" }
+            }
+          },
+          Submission: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              studentId: { type: "string" },
+              homeworkId: { type: "string" },
+              fileName: { type: "string" },
+              submittedAt: { type: "string", format: "date-time" },
+              score: { type: "number" },
+              comment: { type: "string" }
+            }
+          },
+          GradeEntry: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              studentId: { type: "string" },
+              classCode: { type: "string" },
+              subject: { type: "string" },
+              score1: { type: "number" },
+              score2: { type: "number" },
+              score3: { type: "number" },
+              average: { type: "number" }
+            }
+          },
+          GradeBulkUpdateRequest: {
+            type: "object",
+            required: ["classCode", "items"],
+            properties: {
+              classCode: { type: "string" },
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["studentId", "score1", "score2", "score3"],
+                  properties: {
+                    studentId: { type: "string" },
+                    score1: { type: "number" },
+                    score2: { type: "number" },
+                    score3: { type: "number" }
+                  }
+                }
+              }
+            }
+          },
+          LeaveRequest: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              studentId: { type: "string" },
+              classCode: { type: "string" },
+              date: { type: "string", format: "date" },
+              reason: { type: "string" },
+              description: { type: "string" },
+              status: { type: "string", enum: ["pending", "approved", "rejected"] },
+              rejectReason: { type: "string" }
+            }
+          },
+          LeaveRequestCreateRequest: {
+            type: "object",
+            required: ["studentId", "classCode", "date", "reason"],
+            properties: {
+              studentId: { type: "string" },
+              classCode: { type: "string" },
+              date: { type: "string", format: "date" },
+              reason: { type: "string", minLength: 10 },
+              description: { type: "string" }
+            }
+          },
+          LeaveRejectRequest: {
+            type: "object",
+            required: ["rejectReason"],
+            properties: {
+              rejectReason: { type: "string" }
+            }
+          },
+          Invoice: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              studentId: { type: "string" },
+              classCode: { type: "string" },
+              totalAmount: { type: "number" },
+              discount: { type: "number" },
+              status: { type: "string", enum: ["unpaid", "paid"] },
+              dueDate: { type: "string", format: "date" },
+              paidDate: { type: "string", format: "date" },
+              method: { type: "string", enum: ["Tien mat", "Chuyen khoan", "The tin dung", "The ghi no"] },
+              note: { type: "string" }
+            }
+          },
+          BulkInvoiceCreateRequest: {
+            type: "object",
+            required: ["classCode", "dueDate"],
+            properties: {
+              classCode: { type: "string" },
+              dueDate: { type: "string", format: "date" }
+            }
+          },
+          InvoiceMarkPaidRequest: {
+            type: "object",
+            required: ["method", "paidDate"],
+            properties: {
+              method: { type: "string", enum: ["Tien mat", "Chuyen khoan", "The tin dung", "The ghi no"] },
+              paidDate: { type: "string", format: "date" }
+            }
+          },
+          Notification: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              to: { type: "string" },
+              audience: { type: "string" },
+              type: { type: "string" },
+              title: { type: "string" },
+              body: { type: "string" },
+              timestamp: { type: "string", format: "date-time" },
+              read: { type: "boolean" }
+            }
+          },
+          NotificationCreateRequest: {
+            type: "object",
+            required: ["to", "title", "body"],
+            properties: {
+              to: { type: "string", example: "HV001" },
+              type: { type: "string", example: "STAFF_NOTICE" },
+              title: { type: "string" },
+              body: { type: "string" }
+            }
+          },
+          AuditLog: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              at: { type: "string", format: "date-time" },
+              actorId: { type: "string" },
+              actorRole: { type: "string" },
+              screenId: { type: "string" },
+              action: { type: "string" },
+              detail: { type: "string" },
+              meta: { type: "object" }
+            }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    };
+
+    SwaggerUIBundle({
+      spec,
+      dom_id: "#swagger-ui",
+      deepLinking: true,
+      docExpansion: "list",
+      defaultModelsExpandDepth: 2,
+      persistAuthorization: true
+    });
+  </script>
+</body>
+</html>
