@@ -266,6 +266,26 @@ function renderAbsenceHistory() {
   wrap.innerHTML = html || '<div class="invoice-item">Chưa có đơn xin nghỉ.</div>';
 }
 
+function getStudentPaidInvoices(studentId) {
+  const paid = [];
+  let i;
+  for (i = 0; i < db.invoices.length; i++) {
+    const inv = db.invoices[i];
+    if (inv.studentId === studentId && inv.status === 'paid') {
+      paid.push(inv);
+    }
+  }
+  paid.sort(function (a, b) {
+    const aTime = Date.parse((a.paidDate || a.dueDate || '') + 'T00:00:00') || 0;
+    const bTime = Date.parse((b.paidDate || b.dueDate || '') + 'T00:00:00') || 0;
+    if (aTime !== bTime) {
+      return bTime - aTime;
+    }
+    return String(b.id).localeCompare(String(a.id));
+  });
+  return paid;
+}
+
 function renderTuition() {
   const student = getCurrentStudent();
   const info = byId('studentTuitionInfo');
@@ -274,6 +294,8 @@ function renderTuition() {
     return;
   }
   info.innerHTML = 'Họ tên: ' + student.name + '<br>Mã học viên: ' + student.id + '<br>Số điện thoại: ' + student.phone;
+  const paidInvoices = getStudentPaidInvoices(student.id);
+  const paidCount = paidInvoices.length;
   let html = '';
   let debt = 0;
   let i;
@@ -299,6 +321,12 @@ function renderTuition() {
   body.innerHTML = html || '<tr><td colspan="8">Không có dữ liệu học phí.</td></tr>';
   if (byId('studentTotalDebt')) {
     byId('studentTotalDebt').textContent = formatCurrency(debt);
+  }
+  if (byId('studentPaidCountBadge')) {
+    byId('studentPaidCountBadge').textContent = paidCount + ' lần đã đóng';
+  }
+  if (byId('studentPaymentHistoryCount')) {
+    byId('studentPaymentHistoryCount').textContent = 'Tổng cộng: ' + paidCount + ' giao dịch đã thanh toán.';
   }
 }
 
@@ -327,6 +355,8 @@ function confirmPayment() {
   inv.paidDate = new Date().toISOString().slice(0, 10);
   inv.method = state.selectedPaymentMethod === 'cash' ? 'Tiền mặt' : 'Chuyển khoản';
   pushNotification({ to: student.id, title: 'Thanh toán học phí thành công', body: 'Hóa đơn ' + inv.id + ' đã được cập nhật đã thanh toán', read: false });
+  renderTuition();
+  renderPaymentHistory();
   renderStaffSidebarStats();
   scheduleAppSnapshotSave();
   toast('Thanh toán thành công.');
@@ -400,13 +430,17 @@ function renderPaymentHistory() {
     return;
   }
   const student = getCurrentStudent();
+  const paidInvoices = getStudentPaidInvoices(student.id);
+  if (byId('studentPaymentHistoryCount')) {
+    byId('studentPaymentHistoryCount').textContent = 'Tổng cộng: ' + paidInvoices.length + ' giao dịch đã thanh toán.';
+  }
+  if (byId('studentPaidCountBadge')) {
+    byId('studentPaidCountBadge').textContent = paidInvoices.length + ' lần đã đóng';
+  }
   let html = '';
   let i;
-  for (i = 0; i < db.invoices.length; i++) {
-    const t = db.invoices[i];
-    if (t.studentId !== student.id || t.status !== 'paid') {
-      continue;
-    }
+  for (i = 0; i < paidInvoices.length; i++) {
+    const t = paidInvoices[i];
     html += '<tr><td>' + t.id + '</td><td>' + t.note + '</td><td>' + t.paidDate + '</td><td>' + t.method + '</td><td>' + formatCurrency(t.totalAmount) + '</td><td>Đã phát hành</td><td><span class="link" data-inline-action="openReceipt(\'' + t.id + '\')">Chi tiết</span></td></tr>';
   }
   body.innerHTML = html || '<tr><td colspan="7">Chưa có lịch sử thanh toán.</td></tr>';
