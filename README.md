@@ -4,9 +4,8 @@
 
 **StudyHome LMS** là một hệ thống quản lý trung tâm học tập được xây dựng hoàn toàn dưới dạng web tĩnh (static web). Dự án này phục vụ cho các vai trò: học viên, giáo viên, nhân viên trung tâm, với các chức năng quản lý học phí, điểm số, lịch sử thanh toán, thông báo, bài tập, v.v.
 
-- **Công nghệ:** HTML, CSS, JavaScript thuần, không sử dụng backend động.
+- **Công nghệ:** HTML, CSS, JavaScript
 - **Triển khai:** Có thể chạy trực tiếp trên bất kỳ máy chủ web tĩnh nào (VD: GitHub Pages, Vercel, Netlify, hoặc máy chủ nội bộ).
-- **Không yêu cầu cài đặt server backend hoặc database động.**
 
 ## Cấu trúc thư mục
 
@@ -39,7 +38,7 @@ QLTT_Web/
 - Để reset dữ liệu, xóa cache/trình duyệt hoặc dùng chức năng reset (nếu có trên giao diện).
 
 ## Lưu ý quan trọng
-- Đây là web tĩnh, KHÔNG có xử lý backend thực, KHÔNG bảo mật đăng nhập thực tế.
+- Đây là web tĩnh, KHÔNG có xử lý backend.
 - Mọi dữ liệu chỉ lưu tạm trên trình duyệt, không dùng cho môi trường sản xuất thực tế.
 - Phù hợp cho demo, thử nghiệm, hoặc làm mẫu giao diện.
 
@@ -49,6 +48,6 @@ QLTT_Web/
 
 ## Liên hệ
 - Tác giả: Kannar04 (Lê Trung Phong)
-- Đóng góp, phản hồi: [manhle240406@gmail.com]
+- Đóng góp, phản hồi: manhle240406@gmail.com
 
 ---
