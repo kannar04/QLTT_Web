@@ -314,33 +314,173 @@ function lockTeacherGradeBook() {
   scheduleAppSnapshotSave();
 }
 
+function ensureTeacherGradeCollections() {
+  if (!Array.isArray(db.accounts)) {
+    db.accounts = [];
+  }
+  if (!Array.isArray(db.grades)) {
+    db.grades = [];
+  }
+}
+
+function getTeacherGradeBirthLabel(student, fallbackIndex) {
+  const fixedYear = 2008;
+  let month = Number(student && student.birthMonth);
+  if (!month && student && student.birthDate) {
+    const parts = String(student.birthDate).split('-');
+    if (parts.length >= 2) {
+      month = Number(parts[1]);
+    }
+  }
+  if (!month) {
+    month = (Number(fallbackIndex) % 12) + 1;
+  }
+  month = Math.max(1, Math.min(12, month));
+  return String(month).padStart(2, '0') + '/' + fixedYear;
+}
+
+function getTeacherGradeFallbackRowsHtml(isLocked) {
+  const sampleRows = [
+    { id: 'HV901', name: 'Học viên mẫu 1', birthMonth: 1, s1: '8.2', s2: '7.9', s3: '8.4', avg: '8.2' },
+    { id: 'HV902', name: 'Học viên mẫu 2', birthMonth: 3, s1: '7.4', s2: '8.0', s3: '7.8', avg: '7.7' },
+    { id: 'HV903', name: 'Học viên mẫu 3', birthMonth: 5, s1: '9.0', s2: '8.6', s3: '8.8', avg: '8.8' },
+    { id: 'HV904', name: 'Học viên mẫu 4', birthMonth: 8, s1: '6.9', s2: '7.2', s3: '7.5', avg: '7.2' },
+    { id: 'HV905', name: 'Học viên mẫu 5', birthMonth: 10, s1: '8.1', s2: '8.3', s3: '8.0', avg: '8.1' }
+  ];
+  const inputAttr = isLocked ? ' disabled' : '';
+  let html = '';
+  let i;
+  for (i = 0; i < sampleRows.length; i++) {
+    const row = sampleRows[i];
+    const birthLabel = String(row.birthMonth).padStart(2, '0') + '/2008';
+    html += '<tr data-student-id="' + row.id + '">' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td>' + row.name + '</td>' +
+      '<td>' + birthLabel + '</td>' +
+      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + row.s1 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + row.s2 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + row.s3 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+      '<td class="fw700">' + row.avg + '</td>' +
+      '</tr>';
+  }
+  return html;
+}
+
+function ensureTeacherGradeDemoData(c) {
+  ensureTeacherGradeCollections();
+  if (!c) {
+    return;
+  }
+  if (!Array.isArray(c.studentIds)) {
+    c.studentIds = String(c.studentIds || '').split(',').map(function (x) { return x.trim(); }).filter(function (x) { return !!x; });
+  }
+
+  let hasValidStudent = false;
+  let i;
+  for (i = 0; i < c.studentIds.length; i++) {
+    if (getAccountById(c.studentIds[i])) {
+      hasValidStudent = true;
+      break;
+    }
+  }
+  if (hasValidStudent) {
+    return;
+  }
+
+  const classNumber = Number((c.code || '').replace(/\D/g, '')) || 0;
+  const baseId = 900 + (classNumber * 10);
+  const demoNames = [
+    'Hoc vien mau 1',
+    'Hoc vien mau 2',
+    'Hoc vien mau 3',
+    'Hoc vien mau 4',
+    'Hoc vien mau 5',
+    'Hoc vien mau 6',
+    'Hoc vien mau 7',
+    'Hoc vien mau 8'
+  ];
+
+  for (i = 0; i < demoNames.length; i++) {
+    const studentId = 'HV' + padNumber(baseId + i + 1, 3);
+    if (!getAccountById(studentId)) {
+      db.accounts.push({
+        id: studentId,
+        password: '111111',
+        role: 'student',
+        name: demoNames[i],
+        birthYear: 2008,
+        birthMonth: (i % 12) + 1,
+        gender: i % 2 === 0 ? 'Nam' : 'Nu',
+        classCode: c.code,
+        subjectCodes: [c.code],
+        phone: '0909' + padNumber(baseId + i + 1, 6)
+      });
+    }
+    if (c.studentIds.indexOf(studentId) < 0) {
+      c.studentIds.push(studentId);
+    }
+
+    if (!db.grades.find(function (gr) { return gr.studentId === studentId && gr.classCode === c.code; })) {
+      const s1 = Number((6.8 + ((i * 13) % 20) / 10).toFixed(1));
+      const s2 = Number((6.5 + ((i * 11) % 24) / 10).toFixed(1));
+      const s3 = Number((7.0 + ((i * 9) % 18) / 10).toFixed(1));
+      const avg = ((s1 * (state.teacherGradeWeights[0] || 33) + s2 * (state.teacherGradeWeights[1] || 33) + s3 * (state.teacherGradeWeights[2] || 34)) / 100).toFixed(1);
+      db.grades.push({
+        id: 'GRF' + (c.code || '00') + padNumber(i + 1, 2),
+        studentId: studentId,
+        classCode: c.code,
+        subject: c.subject || '',
+        score1: s1,
+        score2: s2,
+        score3: s3,
+        average: avg
+      });
+    }
+  }
+}
+
 function renderTeacherGrades() {
   const body = byId('teacherGradesBody');
   const c = getClassByCode(state.selectedClassCode);
-  if (!body || !c) { return; }
+  if (!body) {
+    return;
+  }
   const isLocked = state.teacherGradeLocked;
+  if (!c) {
+    body.innerHTML = getTeacherGradeFallbackRowsHtml(isLocked);
+    return;
+  }
+  ensureTeacherGradeCollections();
+  ensureTeacherGradeDemoData(c);
   let html = '';
   let i;
-  for (i = 0; i < c.studentIds.length; i++) {
-    const s = getAccountById(c.studentIds[i]);
-    if (!s) { continue; }
-    const g = db.grades.find(function (gr) { return gr.studentId === s.id; }) || {};
-    const s1 = g.score1 !== undefined ? g.score1 : '';
-    const s2 = g.score2 !== undefined ? g.score2 : '';
-    const s3 = g.score3 !== undefined ? g.score3 : '';
-    const avg = g.average !== undefined ? g.average : '';
-    const inputAttr = isLocked ? ' disabled' : '';
-    html += '<tr data-student-id="' + s.id + '">' +
-      '<td>' + (i + 1) + '</td>' +
-      '<td>' + s.name + '</td>' +
-      '<td>' + (s.birthYear || '—') + '</td>' +
-      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s1 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
-      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s2 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
-      '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s3 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
-      '<td class="fw700">' + avg + '</td>' +
-      '</tr>';
+  try {
+    for (i = 0; i < c.studentIds.length; i++) {
+      const s = getAccountById(c.studentIds[i]);
+      if (!s) { continue; }
+      const g = db.grades.find(function (gr) { return gr.studentId === s.id && gr.classCode === c.code; }) ||
+        db.grades.find(function (gr) { return gr.studentId === s.id; }) || {};
+      const s1 = g.score1 !== undefined ? g.score1 : '';
+      const s2 = g.score2 !== undefined ? g.score2 : '';
+      const s3 = g.score3 !== undefined ? g.score3 : '';
+      const avg = g.average !== undefined ? g.average : '';
+      const birthLabel = getTeacherGradeBirthLabel(s, i);
+      const inputAttr = isLocked ? ' disabled' : '';
+      html += '<tr data-student-id="' + s.id + '">' +
+        '<td>' + (i + 1) + '</td>' +
+        '<td>' + s.name + '</td>' +
+        '<td>' + birthLabel + '</td>' +
+        '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s1 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+        '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s2 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+        '<td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="' + s3 + '"' + inputAttr + ' oninput="recalcTeacherGradeRow(this)"></td>' +
+        '<td class="fw700">' + avg + '</td>' +
+        '</tr>';
+    }
+  } catch (error) {
+    console.error('Render teacher grades failed:', error);
+    html = '';
   }
-  body.innerHTML = html || '<tr><td colspan="7" class="txt-center">Không có học viên trong lớp</td></tr>';
+  body.innerHTML = html || getTeacherGradeFallbackRowsHtml(isLocked);
   if (isLocked) {
     const table = byId('teacherGradesTable');
     if (table) { table.classList.add('grade-locked'); }
@@ -357,6 +497,8 @@ function saveTeacherGrades() {
     toast('Bảng điểm đã khóa sổ, không thể chỉnh sửa.', 'error');
     return;
   }
+  ensureTeacherGradeCollections();
+  const selectedClass = getClassByCode(state.selectedClassCode);
   const body = byId('teacherGradesBody');
   if (!body) {
     toast('Không tìm thấy bảng điểm.', 'error');
@@ -376,12 +518,23 @@ function saveTeacherGrades() {
     let existing = null;
     let m;
     for (m = 0; m < db.grades.length; m++) {
-      if (db.grades[m].studentId === studentId) { existing = db.grades[m]; break; }
+      if (db.grades[m].studentId === studentId && db.grades[m].classCode === state.selectedClassCode) {
+        existing = db.grades[m];
+        break;
+      }
     }
     if (existing) {
       existing.score1 = s1; existing.score2 = s2; existing.score3 = s3; existing.average = avg;
     } else {
-      db.grades.push({ studentId: studentId, classCode: state.selectedClassCode, subject: '', score1: s1, score2: s2, score3: s3, average: avg });
+      db.grades.push({
+        studentId: studentId,
+        classCode: state.selectedClassCode,
+        subject: selectedClass ? selectedClass.subject : '',
+        score1: s1,
+        score2: s2,
+        score3: s3,
+        average: avg
+      });
     }
     saved += 1;
   }

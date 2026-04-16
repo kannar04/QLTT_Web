@@ -548,7 +548,7 @@ function renderStudentTimetable() {
   }).join('') + '</tr>';
 
   const codes = getStudentSubjectCodes(student);
-  const allowedSubjects = ['Toán', 'Vật lý', 'Hóa học'];
+  const allowedSubjects = ['Toán', 'Vật lí', 'Vật lý', 'Hóa học'];
   const slots = [
     { slot: 1, label: 'Ca 1 (17h45-19h15)' },
     { slot: 2, label: 'Ca 2 (19h30-21h)' }

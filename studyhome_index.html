@@ -562,13 +562,11 @@
         <div class="report-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
         <div class="report-card-title">Báo cáo phổ điểm</div>
         <div class="report-card-desc">Thống kê phân bố điểm số theo lớp và môn học. Xuất báo cáo dạng bảng.</div>
-        <div class="report-card-footer"><span>Xem chi tiết</span><span>Mở</span></div>
       </div>
       <div class="report-card" data-inline-action="show('s-report-attendance')">
         <div class="report-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h8M8 18h5"/></svg></div>
         <div class="report-card-title">Báo cáo chuyên cần</div>
         <div class="report-card-desc">Theo dõi tỉ lệ đi học, vắng mặt theo từng lớp và khoảng thời gian.</div>
-        <div class="report-card-footer"><span>Xem chi tiết</span><span>Mở</span></div>
       </div>
     </div>
     </div>
@@ -763,7 +761,13 @@
         <div class="panel-title fw700">Danh sách lớp</div>
         <table class="tbl" id="teacherGradesTable">
           <thead><tr><th>STT</th><th>Họ và tên</th><th>Ngày sinh</th><th>Cột 1</th><th>Cột 2</th><th>Cột 3</th><th>Trung bình</th></tr></thead>
-          <tbody id="teacherGradesBody"></tbody>
+          <tbody id="teacherGradesBody">
+            <tr data-student-id="HV901"><td>1</td><td>Học viên 1</td><td>10/01/2008</td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.2" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="7.9" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.4" oninput="recalcTeacherGradeRow(this)"></td><td class="fw700">8.2</td></tr>
+            <tr data-student-id="HV902"><td>2</td><td>Học viên 2</td><td>20/03/2008</td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="7.4" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.0" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="7.8" oninput="recalcTeacherGradeRow(this)"></td><td class="fw700">7.7</td></tr>
+            <tr data-student-id="HV903"><td>3</td><td>Học viên 3</td><td>23/05/2008</td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="9.0" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.6" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.8" oninput="recalcTeacherGradeRow(this)"></td><td class="fw700">8.8</td></tr>
+            <tr data-student-id="HV904"><td>4</td><td>Học viên 4</td><td>21/08/2008</td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="6.9" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="7.2" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="7.5" oninput="recalcTeacherGradeRow(this)"></td><td class="fw700">7.2</td></tr>
+            <tr data-student-id="HV905"><td>5</td><td>Học viên 5</td><td>10/10/2008</td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.1" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.3" oninput="recalcTeacherGradeRow(this)"></td><td><input class="fi grade-cell grade-input-compact" type="number" min="0" max="10" step="0.1" value="8.0" oninput="recalcTeacherGradeRow(this)"></td><td class="fw700">8.1</td></tr>
+          </tbody>
         </table>
         <div class="flex gap12 mt14">
           <button class="btn btn-blue" id="btnTeacherAddGradeColumn">Thêm cột</button>
@@ -1322,7 +1326,7 @@
 <script src="assets/js/features/staff-operations.js" defer></script>
 <script src="assets/js/features/portal-shell-layout.js?v=20260417" defer></script>
 <script src="assets/js/features/student-profile-grades.js" defer></script>
-<script src="assets/js/features/teacher-tools-grades.js" defer></script>
+<script src="assets/js/features/teacher-tools-grades.js?v=20260417c" defer></script>
 <script src="assets/js/app/app-bootstrap.js" defer></script>
 </body>
 </html>
