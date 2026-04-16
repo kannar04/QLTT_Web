@@ -439,7 +439,7 @@ function buildPortalHeaderHtml(role) {
   const home = getPortalHomeScreen(role);
   const subtitle = getPortalRoleSubtitle(role);
   return '<div class="header-left" data-inline-action="show(\'' + home + '\')">' +
-    '<div class="logo-box"><div class="logo-fallback">TRUNG TÂM<br>StudyHome</div></div>' +
+    '<div class="logo-box"><img src="assets/images/studyhome-logo.png?v=20260417" alt="Logo StudyHome"></div>' +
     '<div class="header-info"><h2>Hệ thống</h2><p>Trung tâm dạy học<br>Dành cho ' + subtitle + '</p></div>' +
     '</div>' +
     '<div class="header-right">' +
@@ -587,9 +587,9 @@ function buildStudentClassDetailSidebar() {
     '<div class="course-transcript-body">' +
     '<div><div id="studentCourseWidgetSubject" class="course-transcript-subject">Toán</div><div id="studentCourseWidgetClass" class="course-transcript-meta">Lớp L01</div></div>' +
     '<div class="course-score-grid">' +
-    '<div class="course-score-item"><div class="course-score-label">Điểm 1</div><div id="studentCourseWidgetScore1" class="course-score-value">-</div></div>' +
-    '<div class="course-score-item"><div class="course-score-label">Điểm 2</div><div id="studentCourseWidgetScore2" class="course-score-value">-</div></div>' +
-    '<div class="course-score-item"><div class="course-score-label">Điểm 3</div><div id="studentCourseWidgetScore3" class="course-score-value">-</div></div>' +
+    '<div class="course-score-item"><div class="course-score-label">Tháng 1</div><div id="studentCourseWidgetScore1" class="course-score-value">-</div></div>' +
+    '<div class="course-score-item"><div class="course-score-label">Tháng 2</div><div id="studentCourseWidgetScore2" class="course-score-value">-</div></div>' +
+    '<div class="course-score-item"><div class="course-score-label">Tháng 3</div><div id="studentCourseWidgetScore3" class="course-score-value">-</div></div>' +
     '<div class="course-score-item"><div class="course-score-label">Trung bình</div><div id="studentCourseWidgetAverage" class="course-score-value">-</div></div>' +
     '</div>' +
     '<div class="course-trend-mini"><svg id="studentCourseWidgetChart" viewBox="0 0 300 118" width="100%" height="118" aria-label="Xu hướng điểm môn học"></svg><div id="studentCourseWidgetTrendStatus" class="course-trend-caption">Đang tải dữ liệu...</div></div>' +
