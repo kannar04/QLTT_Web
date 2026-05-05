@@ -2,7 +2,7 @@
 
 ## Giới thiệu
 
-**StudyHome LMS** là một hệ thống quản lý trung tâm học tập được xây dựng hoàn toàn dưới dạng web tĩnh (static web). Dự án này phục vụ cho các vai trò: học viên, giáo viên, nhân viên trung tâm, với các chức năng quản lý học phí, điểm số, lịch sử thanh toán, thông báo, bài tập, v.v.
+**StudyHome LMS** là một hệ thống quản lý trung tâm học tập được mô phỏng dưới dạng web tĩnh (static web). Dự án này phục vụ cho các vai trò: học viên, giáo viên, nhân viên trung tâm, với các chức năng quản lý học phí, điểm số, lịch sử thanh toán, thông báo, bài tập, v.v.
 
 - **Công nghệ:** HTML, CSS, JavaScript
 - **Triển khai:** Có thể chạy trực tiếp trên bất kỳ máy chủ web tĩnh nào (VD: GitHub Pages, Vercel, Netlify, hoặc máy chủ nội bộ).
